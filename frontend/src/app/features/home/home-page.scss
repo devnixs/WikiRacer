@@ -1,86 +1,58 @@
-    .hero-grid {
-      display: grid;
-      gap: 1.2rem;
-    }
+.hero-grid {
+  display: grid;
+  gap: 1.2rem;
+}
 
-    .hero-grid__intro {
-      display: grid;
-      gap: 1rem;
-    }
+.hero-grid__intro {
+  display: grid;
+  gap: 1rem;
+}
 
-    .create-lobby {
-      display: grid;
-      gap: 0.75rem;
-      padding: 1rem;
-      border-radius: 1.35rem;
-      border: 1px solid rgba(16, 36, 61, 0.1);
-      background: rgba(248, 251, 255, 0.9);
-    }
+.create-lobby {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-raised);
+}
 
-    .create-lobby__label,
-    .create-lobby__error {
-      margin: 0;
-    }
+.create-lobby__label,
+.create-lobby__error {
+  margin: 0;
+}
 
-    .create-lobby__label {
-      font-size: 0.86rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-    }
+.create-lobby__label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
 
-    .create-lobby__controls {
-      display: grid;
-      gap: 0.75rem;
-    }
+.create-lobby__controls {
+  display: grid;
+  gap: 0.75rem;
+}
 
-    input,
-    button {
-      border: 0;
-      border-radius: 999px;
-      min-height: 3rem;
-    }
+.create-lobby__error {
+  color: var(--color-error);
+  line-height: 1.5;
+}
 
-    input {
-      padding: 0 1rem;
-      border: 1px solid rgba(16, 36, 61, 0.14);
-      background: rgba(255, 255, 255, 0.96);
-      color: var(--color-text);
-    }
+.metric-grid,
+.feature-grid {
+  display: grid;
+  gap: 1rem;
+}
 
-    button {
-      padding: 0 1.2rem;
-      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-alt));
-      color: #08213c;
-      font-weight: 700;
-      cursor: pointer;
-    }
+@media (min-width: 720px) {
+  .create-lobby__controls {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 
-    button:disabled {
-      cursor: wait;
-      opacity: 0.72;
-    }
-
-    .create-lobby__error {
-      color: #b42318;
-      line-height: 1.5;
-    }
-
-    .metric-grid,
-    .feature-grid {
-      display: grid;
-      gap: 1rem;
-    }
-
-    @media (min-width: 720px) {
-      .create-lobby__controls {
-        grid-template-columns: minmax(0, 1fr) auto;
-      }
-
-      .metric-grid,
-      .feature-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-  
+  .metric-grid,
+  .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

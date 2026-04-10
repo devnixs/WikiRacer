@@ -33,17 +33,17 @@
           </div>
           <div class="timer-strip__actions">
             @if (!isMultiplayerMode() && canStartSoloRace()) {
-              <button type="button" (click)="startSoloRace()">
+              <button type="button" class="btn-sm" (click)="startSoloRace()">
                 {{ soloRace() ? localization.t('match.restartRace') : localization.t('match.startRace') }}
               </button>
             }
             @if (isMultiplayerMode() && multiplayerMatch()?.status === 'finished') {
-              <button type="button" class="action-secondary" (click)="openResults()">
+              <button type="button" class="btn-sm btn-secondary" (click)="openResults()">
                 {{ localization.t('match.viewResults') }}
               </button>
             }
             @if (isMultiplayerMode() && currentMultiplayerPlayer()?.status === 'active') {
-              <button type="button" class="action-secondary" (click)="abandonMatch()">
+              <button type="button" class="btn-sm btn-secondary" (click)="abandonMatch()">
                 {{ localization.t('match.abandon') }}
               </button>
             }
@@ -74,7 +74,7 @@
                 <span>{{ localization.t('match.leftTheRace') }}</span>
               }
             </div>
-            <button type="button" class="action-secondary announcement__dismiss" (click)="dismissAnnouncement(announcement.id)">
+            <button type="button" class="btn-sm btn-secondary announcement__dismiss" (click)="dismissAnnouncement(announcement.id)">
               {{ localization.t('match.dismiss') }}
             </button>
           </div>
@@ -165,22 +165,22 @@
             <!-- Action buttons (desktop) -->
             <div class="race-status__actions">
               @if (!isMultiplayerMode() && canStartSoloRace()) {
-                <button type="button" (click)="startSoloRace()">
+                <button type="button" class="btn-sm" (click)="startSoloRace()">
                   {{ soloRace() ? localization.t('match.restartRace') : localization.t('match.startRace') }}
                 </button>
                 @if (soloRace()?.status === 'finished') {
-                  <button type="button" class="action-secondary" (click)="openResults()">
+                  <button type="button" class="btn-sm btn-secondary" (click)="openResults()">
                     {{ localization.t('match.viewResults') }}
                   </button>
                 }
               }
               @if (isMultiplayerMode() && multiplayerMatch()?.status === 'finished') {
-                <button type="button" class="action-secondary" (click)="openResults()">
+                <button type="button" class="btn-sm btn-secondary" (click)="openResults()">
                   {{ localization.t('match.viewResults') }}
                 </button>
               }
               @if (isMultiplayerMode() && currentMultiplayerPlayer()?.status === 'active') {
-                <button type="button" class="action-secondary" (click)="abandonMatch()">
+                <button type="button" class="btn-sm btn-secondary" (click)="abandonMatch()">
                   {{ localization.t('match.abandon') }}
                 </button>
               }
@@ -214,4 +214,3 @@
         </div>
       }
     </app-page-frame>
-  
