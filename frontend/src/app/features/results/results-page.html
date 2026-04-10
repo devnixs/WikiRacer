@@ -1,0 +1,103 @@
+    <app-page-frame
+      [eyebrow]="localization.t('results.eyebrow')"
+      [title]="pageTitle()"
+      [description]="pageDescription()"
+    >
+      @if (isLoading()) {
+        <section class="section-grid">
+          <p class="empty-state">Loading results...</p>
+        </section>
+      } @else if (multiplayerResult(); as current) {
+        <section class="section-grid">
+          <div class="metric-grid">
+            <app-metric-tile
+              [label]="localization.t('results.winner')"
+              [value]="winnerDisplay()"
+              hint="The winner is the first player recorded by the final in-memory standings."
+            />
+            <app-metric-tile
+              [label]="localization.t('results.playersFinished')"
+              [value]="finishedCountDisplay()"
+              hint="Finished players keep their placement and hop count in the shared recap."
+            />
+            <app-metric-tile
+              [label]="localization.t('results.playersAbandoned')"
+              [value]="abandonedCountDisplay()"
+              hint="Abandon states remain visible to all participants after the race closes."
+            />
+          </div>
+
+          <div class="card-grid">
+            <app-feature-card
+              [label]="localization.t('results.route')"
+              [title]="current.startArticle.displayTitle + ' -> ' + current.targetArticle.displayTitle"
+              body="The shared recap preserves the exact source and destination articles that defined the multiplayer race."
+            />
+            <app-feature-card
+              [label]="localization.t('results.state')"
+              [title]="current.status"
+              body="This summary is loaded from backend match state so every player sees the same final standings."
+            />
+          </div>
+
+          <section class="ranking-board">
+            <h2 class="ranking-board__title">{{ localization.t('results.finalRanking') }}</h2>
+            <div class="ranking-board__rows">
+              @for (player of rankedPlayers(); track player.playerId) {
+                <article class="ranking-row">
+                  <div class="ranking-row__main">
+                    <p class="ranking-row__place">{{ placementLabel(player) }}</p>
+                    <p class="ranking-row__meta">
+                      {{ localization.t('results.status') }}: {{ playerStatusLabel(player.status) }}
+                    </p>
+                  </div>
+                  <div class="ranking-row__stats">
+                    <span>{{ localization.t('results.hops') }}: {{ player.hopCount }}</span>
+                    <span>{{ localization.t('results.finishTime') }}: {{ finishTimeLabel(player) }}</span>
+                    <span>{{ localization.t('results.currentArticle') }}: {{ player.currentArticleTitle ?? '—' }}</span>
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+        </section>
+      } @else if (soloResult(); as current) {
+        <section class="section-grid">
+          <div class="metric-grid">
+            <app-metric-tile
+              [label]="localization.t('results.elapsed')"
+              [value]="soloElapsedDisplay()"
+              hint="Elapsed time is captured when the player reaches the normalized destination article."
+            />
+            <app-metric-tile
+              [label]="localization.t('results.hops')"
+              [value]="soloHopCountDisplay()"
+              hint="Hop count reflects distinct canonical article transitions reported during the solo run."
+            />
+            <app-metric-tile
+              [label]="localization.t('results.currentArticle')"
+              [value]="current.currentArticleTitle"
+              hint="The final reported page is retained as part of the completed solo race snapshot."
+            />
+          </div>
+
+          <div class="card-grid">
+            <app-feature-card
+              [label]="localization.t('results.route')"
+              [title]="current.startArticle.displayTitle + ' -> ' + current.targetArticle.displayTitle"
+              body="The completed solo loop preserves the configured source and destination context for recap."
+            />
+            <app-feature-card
+              [label]="localization.t('results.state')"
+              [title]="current.status"
+              body="This summary is driven from the stored solo race session created by the active match screen."
+            />
+          </div>
+        </section>
+      } @else {
+        <section class="section-grid">
+          <p class="empty-state">{{ localization.t('results.noRace') }}</p>
+        </section>
+      }
+    </app-page-frame>
+  

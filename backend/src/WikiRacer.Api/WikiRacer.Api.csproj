@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\WikiRacer.Application\WikiRacer.Application.csproj" />
+    <ProjectReference Include="..\WikiRacer.Infrastructure\WikiRacer.Infrastructure.csproj" />
+    <ProjectReference Include="..\WikiRacer.Contracts\WikiRacer.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

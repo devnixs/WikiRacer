@@ -1,0 +1,36 @@
+    .feature-card {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1.25rem;
+      min-height: 100%;
+      border-radius: 1.4rem;
+      border: 1px solid var(--color-border);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 248, 240, 0.88));
+      box-shadow: 0 16px 40px rgba(18, 31, 46, 0.08);
+    }
+
+    .feature-card__label,
+    .feature-card__title,
+    .feature-card__body {
+      margin: 0;
+    }
+
+    .feature-card__label {
+      color: var(--color-accent-strong);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .feature-card__title {
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .feature-card__body {
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+  

@@ -1,0 +1,14 @@
+    <section class="page-frame">
+      <div class="page-frame__header">
+        <p class="page-frame__eyebrow">{{ eyebrow() }}</p>
+        <h1 class="page-frame__title">{{ title() }}</h1>
+        @if (description(); as text) {
+          <p class="page-frame__description">{{ text }}</p>
+        }
+      </div>
+
+      <div class="page-frame__body">
+        <ng-content />
+      </div>
+    </section>
+  

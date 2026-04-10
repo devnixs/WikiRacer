@@ -1,0 +1,217 @@
+    <app-page-frame
+      [eyebrow]="localization.t('match.eyebrow')"
+      [title]="localization.t('match.title')"
+      [description]="localization.t('match.description')"
+    >
+      @if (!publicLobbyId()) {
+        <p class="status-message">{{ localization.t('match.openFromLobby') }}</p>
+      } @else if (isLoading()) {
+        <p class="status-message">{{ localization.t('match.loading') }}</p>
+      } @else if (errorMessage(); as error) {
+        <p class="status-message status-message--error">{{ error }}</p>
+      } @else if (lobby()) {
+
+        <!-- Attribution chips -->
+        <div class="status-strip">
+          <app-chip [text]="localization.t('match.viewer.attribution')" [contrast]="true" />
+          <app-chip [text]="localization.t('match.viewer.externalNotice')" />
+          @if (isMultiplayerMode()) {
+            <app-chip [text]="localization.t('match.multiplayerState')" />
+          }
+        </div>
+
+        <!-- Compact timer strip: visible on mobile only -->
+        <div class="timer-strip">
+          <span class="timer-strip__clock">{{ elapsedDisplay() }}</span>
+          <div class="timer-strip__stat">
+            <span class="timer-strip__label">{{ localization.t('match.hops') }}</span>
+            <strong class="timer-strip__value">{{ hopCountDisplay() }}</strong>
+          </div>
+          <div class="timer-strip__stat">
+            <span class="timer-strip__label">{{ localization.t('match.eyebrow') }}</span>
+            <strong class="timer-strip__value">{{ statusDisplay() }}</strong>
+          </div>
+          <div class="timer-strip__actions">
+            @if (!isMultiplayerMode() && canStartSoloRace()) {
+              <button type="button" (click)="startSoloRace()">
+                {{ soloRace() ? localization.t('match.restartRace') : localization.t('match.startRace') }}
+              </button>
+            }
+            @if (isMultiplayerMode() && multiplayerMatch()?.status === 'finished') {
+              <button type="button" class="action-secondary" (click)="openResults()">
+                {{ localization.t('match.viewResults') }}
+              </button>
+            }
+            @if (isMultiplayerMode() && currentMultiplayerPlayer()?.status === 'active') {
+              <button type="button" class="action-secondary" (click)="abandonMatch()">
+                {{ localization.t('match.abandon') }}
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (!isMultiplayerMode() && soloRace()?.status === 'finished') {
+          <p class="finish-banner">{{ localization.t('match.finishBanner') }}</p>
+        }
+
+        @if (multiplayerMatch()?.status === 'finished') {
+          <p class="finish-banner">{{ localization.t('match.matchComplete') }}</p>
+        }
+
+        <!-- Finish and abandon announcements -->
+        @for (announcement of announcements(); track announcement.id) {
+          <div class="announcement" [class.announcement--finish]="announcement.type === 'finish'" [class.announcement--abandon]="announcement.type === 'abandon'">
+            <div class="announcement__body">
+              @if (announcement.type === 'finish' && announcement.playerId === currentPlayerId()) {
+                <strong>{{ localization.t('match.youFinished') }}</strong>
+                <span class="announcement__meta">{{ localization.t('match.place') }} {{ announcement.placement }} — {{ announcement.hopCount }} {{ localization.t('match.hops') }}</span>
+              } @else if (announcement.type === 'finish') {
+                <strong>{{ announcement.displayName }}</strong>
+                <span>{{ localization.t('match.reachedTarget') }}</span>
+                <span class="announcement__meta">{{ localization.t('match.place') }} {{ announcement.placement }} — {{ announcement.hopCount }} {{ localization.t('match.hops') }}</span>
+              } @else {
+                <strong>{{ announcement.displayName }}</strong>
+                <span>{{ localization.t('match.leftTheRace') }}</span>
+              }
+            </div>
+            <button type="button" class="action-secondary announcement__dismiss" (click)="dismissAnnouncement(announcement.id)">
+              {{ localization.t('match.dismiss') }}
+            </button>
+          </div>
+        }
+
+        <!-- Three-pane match layout -->
+        <div class="match-layout">
+
+          <!-- LEFT: Table of contents -->
+          <aside class="toc-panel">
+            <p class="toc-panel__heading">{{ localization.t('match.toc') }}</p>
+            @if (tocEntries().length > 0) {
+              <button type="button" class="toc-toggle-btn" (click)="toggleToc()">
+                {{ localization.t('match.toc') }}
+                <span class="toc-toggle-btn__icon" aria-hidden="true">{{ tocExpanded() ? '▲' : '▼' }}</span>
+              </button>
+              <nav class="toc-nav" [class.toc-nav--hidden]="!tocExpanded()">
+                @for (entry of tocEntries(); track entry.id) {
+                  <a
+                    class="toc-nav__entry"
+                    [class.toc-nav__entry--sub]="entry.level === 3"
+                    [href]="'#' + entry.id"
+                    (click)="onTocClick($event, entry.id)"
+                  >{{ entry.title }}</a>
+                }
+              </nav>
+            } @else {
+              <p class="toc-panel__empty">—</p>
+            }
+          </aside>
+
+          <!-- CENTER: Article reading area -->
+          <main class="article-area">
+            <div class="article-shell__source">
+              <p class="article-shell__eyebrow">{{ localization.t('match.sourceLink') }}</p>
+              @if (renderedArticle(); as article) {
+                <a [href]="article.sourceUrl" target="_blank" rel="noopener noreferrer" class="article-shell__source-link">
+                  {{ article.sourceUrl }}
+                </a>
+              }
+            </div>
+
+            @if (renderedHtml()) {
+              <div class="article-surface" [innerHTML]="renderedHtml()" (click)="onArticleSurfaceClick($event)"></div>
+            } @else {
+              <p class="status-message">{{ localization.t('match.viewer.empty') }}</p>
+            }
+          </main>
+
+          <!-- RIGHT: Race status panel -->
+          <aside class="race-status">
+            <p class="race-status__heading">{{ localization.t('match.raceStatus') }}</p>
+
+            <!-- Timer (desktop) -->
+            <div class="race-status__timer">{{ elapsedDisplay() }}</div>
+
+            <!-- My stats -->
+            <div class="race-status__stats">
+              <div class="race-status__stat-row">
+                <span class="race-status__stat-label">{{ localization.t('match.hops') }}</span>
+                <strong class="race-status__stat-value">{{ hopCountDisplay() }}</strong>
+              </div>
+              <div class="race-status__stat-row">
+                <span class="race-status__stat-label">Status</span>
+                <strong class="race-status__stat-value">{{ statusDisplay() }}</strong>
+              </div>
+            </div>
+
+            <!-- Route: source → target -->
+            <div class="race-status__route">
+              <div class="race-status__route-item">
+                <span class="race-status__route-label">{{ localization.t('match.source') }}</span>
+                <span class="race-status__route-value">{{ sourceDisplay() }}</span>
+              </div>
+              <span class="race-status__route-arrow" aria-hidden="true">→</span>
+              <div class="race-status__route-item">
+                <span class="race-status__route-label">{{ localization.t('match.target') }}</span>
+                <span class="race-status__route-value">{{ targetDisplay() }}</span>
+              </div>
+            </div>
+
+            <!-- Current page -->
+            <div class="race-status__current">
+              <span class="race-status__current-label">{{ localization.t('match.currentArticle') }}</span>
+              <span class="race-status__current-value">{{ currentArticleDisplay() }}</span>
+            </div>
+
+            <!-- Action buttons (desktop) -->
+            <div class="race-status__actions">
+              @if (!isMultiplayerMode() && canStartSoloRace()) {
+                <button type="button" (click)="startSoloRace()">
+                  {{ soloRace() ? localization.t('match.restartRace') : localization.t('match.startRace') }}
+                </button>
+                @if (soloRace()?.status === 'finished') {
+                  <button type="button" class="action-secondary" (click)="openResults()">
+                    {{ localization.t('match.viewResults') }}
+                  </button>
+                }
+              }
+              @if (isMultiplayerMode() && multiplayerMatch()?.status === 'finished') {
+                <button type="button" class="action-secondary" (click)="openResults()">
+                  {{ localization.t('match.viewResults') }}
+                </button>
+              }
+              @if (isMultiplayerMode() && currentMultiplayerPlayer()?.status === 'active') {
+                <button type="button" class="action-secondary" (click)="abandonMatch()">
+                  {{ localization.t('match.abandon') }}
+                </button>
+              }
+            </div>
+
+            <!-- Multiplayer player list -->
+            @if (multiplayerMatch(); as match) {
+              <div class="race-status__players">
+                <p class="race-status__players-heading">{{ localization.t('match.players') }}</p>
+                @for (player of match.players; track player.playerId) {
+                  <div class="player-row" [class.player-row--me]="player.playerId === currentPlayerId()">
+                    <div class="player-row__header">
+                      <span class="player-row__name">{{ player.displayName }}</span>
+                      @if (player.playerId === currentPlayerId()) {
+                        <span class="player-row__you">({{ localization.t('match.player.you') }})</span>
+                      }
+                      <span class="player-row__status player-row__status--{{ player.status }}">
+                        {{ playerStatusLabel(player.status) }}
+                      </span>
+                    </div>
+                    <div class="player-row__page">{{ player.currentArticleTitle ?? '—' }}</div>
+                    <div class="player-row__hops">
+                      {{ player.hopCount }} {{ localization.t('match.hops') }}
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </aside>
+
+        </div>
+      }
+    </app-page-frame>
+  

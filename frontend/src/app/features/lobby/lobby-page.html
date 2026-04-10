@@ -1,0 +1,243 @@
+    <app-page-frame
+      [eyebrow]="localization.t('lobby.eyebrow')"
+      [title]="localization.t('lobby.title')"
+      [description]="localization.t('lobby.description')"
+    >
+      @if (!publicLobbyId()) {
+        <div class="section-grid">
+          <app-feature-card
+            label="Entry"
+            [title]="localization.t('lobby.noSelection')"
+            [body]="localization.t('lobby.noSelection.body')"
+          />
+        </div>
+      } @else if (isLoading()) {
+        <div class="section-grid">
+          <p class="status-message">{{ localization.t('lobby.loading') }} {{ publicLobbyId() }}...</p>
+        </div>
+      } @else if (entryError(); as error) {
+        <div class="section-grid">
+          <p class="status-message status-message--error">{{ error }}</p>
+          <a routerLink="/" class="back-link">{{ localization.t('lobby.back') }}</a>
+        </div>
+      } @else if (lobby(); as currentLobby) {
+        <section class="section-grid">
+          <div class="share-panel">
+            <div class="share-panel__content">
+              <app-chip [text]="localization.t('lobby.share')" [contrast]="true" />
+              <p class="share-panel__url">{{ shareUrl() }}</p>
+            </div>
+            <button type="button" (click)="copyShareLink()">
+              {{ copiedShareLink() ? localization.t('lobby.copied') : localization.t('lobby.copy') }}
+            </button>
+          </div>
+
+          <div class="metric-grid">
+            <app-metric-tile [label]="localization.t('lobby.code')" [value]="currentLobby.publicLobbyId" hint="The public-safe identifier used in the canonical share URL." />
+            <app-metric-tile [label]="localization.t('lobby.players')" [value]="currentLobby.players.length + '/' + currentLobby.settings.playerCap" hint="Joining stops cleanly when the room reaches capacity." />
+            <app-metric-tile [label]="localization.t('lobby.language')" [value]="localization.t(currentLobby.settings.language === 'en' ? 'language.en' : 'language.fr')" [hint]="localization.t('lobby.hostLanguageHint')" />
+          </div>
+
+          <div class="card-grid">
+            <app-feature-card
+              label="Articles"
+              [title]="localization.t('lobby.selectedArticles')"
+              [body]="selectedArticlesSummary()"
+            />
+            <app-feature-card
+              label="Join State"
+              [title]="currentLobby.players.length >= currentLobby.settings.playerCap ? localization.t('lobby.joinState.full') : localization.t('lobby.joinState.open')"
+              body="Invalid, expired, and full lobby states are surfaced through backend error payloads so the route entry path can fail clearly."
+            />
+          </div>
+
+          @if (countdownSeconds() > 0) {
+            <div class="countdown-banner">
+              <span>{{ localization.t('lobby.countdown') }}</span>
+              <strong>{{ countdownSeconds() }}</strong>
+            </div>
+          } @else if (currentLobby.players.length > 1) {
+            <p class="status-message">{{ localization.t('lobby.countdownWaiting') }}</p>
+          }
+
+          @if (isHost() && canStartMultiplayer()) {
+            <button type="button" class="ready-toggle" (click)="startMultiplayerMatch()">
+              {{ localization.t('lobby.startMultiplayer') }}
+            </button>
+          } @else if (isLobbyInMatch(currentLobby)) {
+            <a class="viewer-link viewer-link--accent" [routerLink]="['/match', currentLobby.publicLobbyId]" [queryParams]="{ mode: 'multiplayer' }">
+              {{ localization.t('lobby.openMultiplayer') }}
+            </a>
+          }
+
+          @if (currentLobby.settings.startArticle) {
+            <div class="viewer-link-group">
+              <a class="viewer-link" [routerLink]="['/match', currentLobby.publicLobbyId]">
+                {{ localization.t('lobby.openViewer') }}
+              </a>
+
+              @if (currentLobby.settings.targetArticle) {
+                <a
+                  class="viewer-link viewer-link--accent"
+                  [routerLink]="['/match', currentLobby.publicLobbyId]"
+                  [queryParams]="{ startSolo: '1' }"
+                >
+                  {{ localization.t('lobby.startSolo') }}
+                </a>
+              }
+            </div>
+          }
+
+          @if (isHost()) {
+            <form class="language-form" (ngSubmit)="updateLanguage()">
+              <label for="lobby-language">{{ localization.t('lobby.hostLanguage') }}</label>
+              <div class="language-form__controls">
+                <select
+                  id="lobby-language"
+                  name="lobbyLanguage"
+                  [(ngModel)]="selectedLanguage"
+                  [disabled]="isUpdatingLanguage()"
+                >
+                  <option value="fr">{{ localization.t('language.fr') }}</option>
+                  <option value="en">{{ localization.t('language.en') }}</option>
+                </select>
+                <button type="submit" [disabled]="isUpdatingLanguage() || selectedLanguage === currentLobby.settings.language">
+                  {{ isUpdatingLanguage() ? localization.t('lobby.changeLanguagePending') : localization.t('lobby.changeLanguage') }}
+                </button>
+              </div>
+              @if (languageError(); as error) {
+                <p class="join-form__error">{{ error }}</p>
+              }
+            </form>
+
+            <div class="article-pickers">
+              <section class="article-picker">
+                <div class="article-picker__header">
+                  <label for="start-search">{{ localization.t('lobby.searchStart') }}</label>
+                  <button
+                    type="button"
+                    class="article-picker__action"
+                    (click)="randomizeArticle('start')"
+                    [disabled]="isRandomizingStart()"
+                  >
+                    {{ isRandomizingStart() ? localization.t('lobby.randomizing') : localization.t('lobby.randomizeSource') }}
+                  </button>
+                </div>
+                <input
+                  id="start-search"
+                  name="startSearch"
+                  [ngModel]="startSearch()"
+                  (ngModelChange)="onSearchInput('start', $event)"
+                  [placeholder]="localization.t('lobby.searchPlaceholder')"
+                />
+                @if (isSearchingStart()) {
+                  <p class="picker-status">{{ localization.t('lobby.searching') }}</p>
+                } @else if (startSuggestions().length === 0 && startSearch().trim().length >= 2) {
+                  <p class="picker-status">{{ localization.t('lobby.noSuggestions') }}</p>
+                }
+                <div class="suggestions">
+                  @for (suggestion of startSuggestions(); track suggestion.title) {
+                    <button type="button" class="suggestion-card" (click)="selectArticle('start', suggestion.title)">
+                      <span>{{ suggestion.displayTitle }}</span>
+                      <small>{{ suggestion.description || suggestion.canonicalPath }}</small>
+                      <strong>{{ localization.t('lobby.pickSource') }}</strong>
+                    </button>
+                  }
+                </div>
+              </section>
+
+              <section class="article-picker">
+                <div class="article-picker__header">
+                  <label for="target-search">{{ localization.t('lobby.searchTarget') }}</label>
+                  <button
+                    type="button"
+                    class="article-picker__action"
+                    (click)="randomizeArticle('target')"
+                    [disabled]="isRandomizingTarget()"
+                  >
+                    {{ isRandomizingTarget() ? localization.t('lobby.randomizing') : localization.t('lobby.randomizeTarget') }}
+                  </button>
+                </div>
+                <input
+                  id="target-search"
+                  name="targetSearch"
+                  [ngModel]="targetSearch()"
+                  (ngModelChange)="onSearchInput('target', $event)"
+                  [placeholder]="localization.t('lobby.searchPlaceholder')"
+                />
+                @if (isSearchingTarget()) {
+                  <p class="picker-status">{{ localization.t('lobby.searching') }}</p>
+                } @else if (targetSuggestions().length === 0 && targetSearch().trim().length >= 2) {
+                  <p class="picker-status">{{ localization.t('lobby.noSuggestions') }}</p>
+                }
+                <div class="suggestions">
+                  @for (suggestion of targetSuggestions(); track suggestion.title) {
+                    <button type="button" class="suggestion-card" (click)="selectArticle('target', suggestion.title)">
+                      <span>{{ suggestion.displayTitle }}</span>
+                      <small>{{ suggestion.description || suggestion.canonicalPath }}</small>
+                      <strong>{{ localization.t('lobby.pickTarget') }}</strong>
+                    </button>
+                  }
+                </div>
+              </section>
+            </div>
+
+            @if (articleError(); as error) {
+              <p class="join-form__error">{{ error }}</p>
+            }
+          }
+
+          @if (joinState()) {
+            <button
+              type="button"
+              class="ready-toggle"
+              (click)="toggleReady()"
+              [disabled]="isUpdatingReady()"
+            >
+              {{ currentPlayerReady() ? localization.t('lobby.notReady') : localization.t('lobby.ready') }}
+            </button>
+          }
+
+          @if (realtimeError(); as error) {
+            <p class="join-form__error">{{ error }}</p>
+          }
+
+          @if (joinState(); as joined) {
+            <div class="joined-banner">
+              <p class="joined-banner__title">{{ localization.t('lobby.joined') }} {{ sessionDisplayName() }}</p>
+              <p class="joined-banner__body">
+                Share this link with friends. Reopening it in the same runtime session will join without asking for your name again.
+              </p>
+            </div>
+          } @else {
+            <form class="join-form" (ngSubmit)="joinLobby()">
+              <label for="join-name">{{ localization.t('lobby.joinForm') }}</label>
+              <div class="join-form__controls">
+                <input
+                  id="join-name"
+                  name="joinName"
+                  [(ngModel)]="joinName"
+                  [disabled]="isJoining()"
+                  maxlength="32"
+                  placeholder="Your temporary display name"
+                  required
+                />
+                <button type="submit" [disabled]="isJoining() || !joinName.trim()">
+                  {{ isJoining() ? localization.t('lobby.joining') : localization.t('lobby.joinButton') }}
+                </button>
+              </div>
+              @if (joinError(); as error) {
+                <p class="join-form__error">{{ error }}</p>
+              }
+            </form>
+          }
+
+          <app-feature-card
+            label="Members"
+            [title]="localization.t('lobby.members')"
+            [body]="playersSummary()"
+          />
+        </section>
+      }
+    </app-page-frame>
+  

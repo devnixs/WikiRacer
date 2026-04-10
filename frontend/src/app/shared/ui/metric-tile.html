@@ -1,0 +1,8 @@
+    <article class="metric-tile">
+      <p class="metric-tile__label">{{ label() }}</p>
+      <p class="metric-tile__value">{{ value() }}</p>
+      @if (hint(); as text) {
+        <p class="metric-tile__hint">{{ text }}</p>
+      }
+    </article>
+  

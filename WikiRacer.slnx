@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/WikiRacer.Api/WikiRacer.Api.csproj" />
+    <Project Path="backend/src/WikiRacer.Application/WikiRacer.Application.csproj" />
+    <Project Path="backend/src/WikiRacer.Contracts/WikiRacer.Contracts.csproj" />
+    <Project Path="backend/src/WikiRacer.Domain/WikiRacer.Domain.csproj" />
+    <Project Path="backend/src/WikiRacer.Infrastructure/WikiRacer.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/">
+    <Project Path="backend/tests/WikiRacer.ArchitectureTests/WikiRacer.ArchitectureTests.csproj" />
+  </Folder>
+</Solution>

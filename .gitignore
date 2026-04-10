@@ -1,0 +1,13 @@
+.DS_Store
+.npm-cache/
+.nuget/
+
+backend/**/bin/
+backend/**/obj/
+
+frontend/.angular/
+frontend/dist/
+frontend/node_modules/
+
+.idea/
+.vscode/
