@@ -22,7 +22,7 @@ export class ArticleHtmlSanitizerService {
     const container = parsed.body ?? parsed.documentElement;
 
     container.querySelectorAll(
-      'script,style,link,meta,base,iframe,frame,object,embed,form,input,button,textarea,select,noscript,svg,math,img,figure'
+      'script,style,link,meta,base,iframe,frame,object,embed,form,input,button,textarea,select,noscript,svg,math'
     ).forEach((node) => node.remove());
 
     container.querySelectorAll('*').forEach((element) => {
@@ -33,7 +33,6 @@ export class ArticleHtmlSanitizerService {
           name.startsWith('on') ||
           name === 'style' ||
           name === 'id' ||
-          name === 'class' ||
           name === 'about' ||
           name === 'typeof' ||
           name === 'resource' ||
@@ -43,6 +42,17 @@ export class ArticleHtmlSanitizerService {
         ) {
           element.removeAttribute(attribute.name);
         }
+      }
+    });
+
+    container.querySelectorAll('img').forEach((image) => this.prepareImage(image, document.sourceUrl));
+    container.querySelectorAll('source[srcset]').forEach((source) => {
+      const normalized = this.normalizeSrcset(source.getAttribute('srcset'), document.sourceUrl);
+
+      if (normalized) {
+        source.setAttribute('srcset', normalized);
+      } else {
+        source.remove();
       }
     });
 
@@ -66,6 +76,12 @@ export class ArticleHtmlSanitizerService {
       const href = anchor.getAttribute('href');
 
       if (!href) {
+        return;
+      }
+
+      if (href.startsWith('#')) {
+        anchor.removeAttribute('target');
+        anchor.setAttribute('rel', 'nofollow');
         return;
       }
 
@@ -94,6 +110,62 @@ export class ArticleHtmlSanitizerService {
       html: this.sanitizer.bypassSecurityTrustHtml(container.innerHTML),
       toc
     };
+  }
+
+  private prepareImage(image: HTMLImageElement, sourceUrl: string): void {
+    const src = this.normalizeUrl(image.getAttribute('src'), sourceUrl);
+
+    if (!src) {
+      image.remove();
+      return;
+    }
+
+    image.setAttribute('src', src);
+    image.setAttribute('loading', 'lazy');
+    image.setAttribute('decoding', 'async');
+    image.setAttribute('referrerpolicy', 'no-referrer');
+
+    const srcset = this.normalizeSrcset(image.getAttribute('srcset'), sourceUrl);
+
+    if (srcset) {
+      image.setAttribute('srcset', srcset);
+    } else {
+      image.removeAttribute('srcset');
+    }
+  }
+
+  private normalizeSrcset(value: string | null, sourceUrl: string): string | null {
+    if (!value) {
+      return null;
+    }
+
+    const candidates = value
+      .split(',')
+      .map((candidate) => candidate.trim())
+      .filter(Boolean)
+      .map((candidate) => {
+        const parts = candidate.split(/\s+/);
+        const url = this.normalizeUrl(parts[0], sourceUrl);
+
+        return url ? [url, ...parts.slice(1)].join(' ') : null;
+      })
+      .filter((candidate): candidate is string => candidate !== null);
+
+    return candidates.length > 0 ? candidates.join(', ') : null;
+  }
+
+  private normalizeUrl(value: string | null, sourceUrl: string): string | null {
+    if (!value) {
+      return null;
+    }
+
+    const resolved = this.resolveHref(value, sourceUrl);
+
+    if (!resolved || (resolved.protocol !== 'https:' && resolved.protocol !== 'http:')) {
+      return null;
+    }
+
+    return resolved.toString();
   }
 
   private resolveHref(href: string, sourceUrl: string): URL | null {

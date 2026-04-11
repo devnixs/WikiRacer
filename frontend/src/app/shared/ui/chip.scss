@@ -11,6 +11,7 @@
 }
 
 .chip--contrast {
-  background: rgba(16, 36, 61, 0.92);
-  color: var(--color-surface);
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
 }
