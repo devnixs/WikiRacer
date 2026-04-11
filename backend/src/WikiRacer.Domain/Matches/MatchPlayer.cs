@@ -28,6 +28,16 @@ public sealed class MatchPlayer
 
     public bool IsConnected { get; private set; }
 
+    public void BeginAtArticle(string canonicalArticleTitle)
+    {
+        if (Status != MatchPlayerRaceStatus.Active)
+        {
+            return;
+        }
+
+        CurrentArticleTitle = canonicalArticleTitle;
+    }
+
     public void ReportProgress(string canonicalArticleTitle)
     {
         if (Status != MatchPlayerRaceStatus.Active)

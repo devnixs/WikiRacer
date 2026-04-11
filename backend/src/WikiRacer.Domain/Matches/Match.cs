@@ -30,7 +30,7 @@ public sealed class Match
 
         foreach (var player in _players.Where(player => player.Status == MatchPlayerRaceStatus.Active))
         {
-            player.ReportProgress(startArticle.Title.Value);
+            player.BeginAtArticle(startArticle.Title.Value);
         }
     }
 

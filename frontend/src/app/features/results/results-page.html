@@ -13,30 +13,30 @@
             <app-metric-tile
               [label]="localization.t('results.winner')"
               [value]="winnerDisplay()"
-              hint="The winner is the first player recorded by the final in-memory standings."
+              hint="The first player to reach the target article."
             />
             <app-metric-tile
               [label]="localization.t('results.playersFinished')"
               [value]="finishedCountDisplay()"
-              hint="Finished players keep their placement and hop count in the shared recap."
+              hint="Number of players who reached the target article."
             />
             <app-metric-tile
               [label]="localization.t('results.playersAbandoned')"
               [value]="abandonedCountDisplay()"
-              hint="Abandon states remain visible to all participants after the race closes."
+              hint="Number of players who left before reaching the target."
             />
           </div>
 
           <div class="card-grid">
             <app-feature-card
               [label]="localization.t('results.route')"
-              [title]="current.startArticle.displayTitle + ' -> ' + current.targetArticle.displayTitle"
-              body="The shared recap preserves the exact source and destination articles that defined the multiplayer race."
+              [title]="current.startArticle.displayTitle + ' → ' + current.targetArticle.displayTitle"
+              body="The route everyone raced through this game."
             />
             <app-feature-card
               [label]="localization.t('results.state')"
               [title]="current.status"
-              body="This summary is loaded from backend match state so every player sees the same final standings."
+              body="The final outcome of the match."
             />
           </div>
 
@@ -67,30 +67,30 @@
             <app-metric-tile
               [label]="localization.t('results.elapsed')"
               [value]="soloElapsedDisplay()"
-              hint="Elapsed time is captured when the player reaches the normalized destination article."
+              hint="Your time from start to reaching the target article."
             />
             <app-metric-tile
               [label]="localization.t('results.hops')"
               [value]="soloHopCountDisplay()"
-              hint="Hop count reflects distinct canonical article transitions reported during the solo run."
+              hint="Total number of Wikipedia articles you visited during the race."
             />
             <app-metric-tile
               [label]="localization.t('results.currentArticle')"
               [value]="current.currentArticleTitle"
-              hint="The final reported page is retained as part of the completed solo race snapshot."
+              hint="The last Wikipedia article you were on."
             />
           </div>
 
           <div class="card-grid">
             <app-feature-card
               [label]="localization.t('results.route')"
-              [title]="current.startArticle.displayTitle + ' -> ' + current.targetArticle.displayTitle"
-              body="The completed solo loop preserves the configured source and destination context for recap."
+              [title]="current.startArticle.displayTitle + ' → ' + current.targetArticle.displayTitle"
+              body="The articles you raced between."
             />
             <app-feature-card
               [label]="localization.t('results.state')"
               [title]="current.status"
-              body="This summary is driven from the stored solo race session created by the active match screen."
+              body="Your final race result."
             />
           </div>
         </section>

@@ -1,6 +1,7 @@
 @use 'styles/theme';
 @use 'styles/base';
 @use 'styles/components';
+@use 'styles/wikipedia-article';
 
 // ── App shell ─────────────────────────────────────────────────────────────────
 // Top-level layout is defined here because it depends on the shell component

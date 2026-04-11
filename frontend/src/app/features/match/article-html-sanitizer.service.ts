@@ -87,7 +87,19 @@ export class ArticleHtmlSanitizerService {
 
       const resolved = this.resolveHref(href, document.sourceUrl);
 
-      if (resolved && this.isInternalArticleLink(resolved, document.language)) {
+      if (!resolved) {
+        anchor.removeAttribute('href');
+        return;
+      }
+
+      if (this.isSameArticleFragment(resolved, document.sourceUrl)) {
+        anchor.setAttribute('href', `/match/${publicLobbyId}?article=${encodeURIComponent(document.title)}${resolved.hash}`);
+        anchor.setAttribute('rel', 'nofollow');
+        anchor.removeAttribute('target');
+        return;
+      }
+
+      if (this.isInternalArticleLink(resolved, document.language)) {
         const articleTitle = this.toTitleFromUrl(resolved);
 
         if (!articleTitle) {
@@ -102,6 +114,7 @@ export class ArticleHtmlSanitizerService {
         return;
       }
 
+      anchor.setAttribute('href', resolved.toString());
       anchor.setAttribute('target', '_blank');
       anchor.setAttribute('rel', 'noopener noreferrer external nofollow');
     });
@@ -123,7 +136,6 @@ export class ArticleHtmlSanitizerService {
     image.setAttribute('src', src);
     image.setAttribute('loading', 'lazy');
     image.setAttribute('decoding', 'async');
-    image.setAttribute('referrerpolicy', 'no-referrer');
 
     const srcset = this.normalizeSrcset(image.getAttribute('srcset'), sourceUrl);
 
@@ -140,7 +152,7 @@ export class ArticleHtmlSanitizerService {
     }
 
     const candidates = value
-      .split(',')
+      .split(/,\s+/)
       .map((candidate) => candidate.trim())
       .filter(Boolean)
       .map((candidate) => {
@@ -180,6 +192,15 @@ export class ArticleHtmlSanitizerService {
     return url.hostname === `${language}.wikipedia.org`
       && url.pathname.startsWith('/wiki/')
       && !decodeURIComponent(url.pathname.slice('/wiki/'.length)).includes(':');
+  }
+
+  private isSameArticleFragment(url: URL, sourceUrl: string): boolean {
+    const source = this.resolveHref(sourceUrl, sourceUrl);
+
+    return !!source
+      && !!url.hash
+      && url.origin === source.origin
+      && url.pathname === source.pathname;
   }
 
   private toTitleFromUrl(url: URL): string | null {

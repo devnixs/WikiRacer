@@ -5,8 +5,6 @@
     >
       <section class="hero-grid">
         <div class="hero-grid__intro">
-          <app-chip text="Design System Seeded" [contrast]="true" />
-
           <form class="create-lobby" (ngSubmit)="createLobby()">
             <label class="create-lobby__label" for="display-name">{{ localization.t('home.create') }}</label>
             <div class="create-lobby__controls">
@@ -29,27 +27,27 @@
           </form>
 
           <div class="metric-grid">
-            <app-metric-tile label="Feature Areas" value="4" hint="Home, lobby, match, and results all have dedicated routes." />
-            <app-metric-tile label="UI Primitives" value="4" hint="Shared page frames, cards, metrics, and chips are reusable." />
-            <app-metric-tile label="Protocol Ready" value="v1" hint="Frontend structure aligns with the shared contracts defined in story 003." />
+            <app-metric-tile label="Game modes" value="2" hint="Play solo to beat your own time, or race friends in multiplayer." />
+            <app-metric-tile label="Languages" value="2" hint="Race through English or French Wikipedia articles." />
+            <app-metric-tile label="Multiplayer" value="Live" hint="Races happen in real time — everyone navigates at the same moment." />
           </div>
         </div>
 
         <div class="feature-grid">
           <app-feature-card
-            label="Routing"
-            title="Dedicated feature slices"
-            body="Each core experience has its own page component and route, keeping future state and transport logic scoped cleanly."
+            label="Navigate"
+            title="Click links to hop between articles"
+            body="Every click on a Wikipedia link counts as a hop. Find the shortest path from the start article to the target."
           />
           <app-feature-card
-            label="Theme"
-            title="Vivid but controlled visual language"
-            body="Warm highlights, cool panels, and display/body typography are codified as tokens instead of one-off component styles."
+            label="Compete"
+            title="Race your friends in real time"
+            body="Everyone starts at the same article and races to reach the target. First to arrive — or fewest hops — wins."
           />
           <app-feature-card
-            label="Layout"
-            title="Composable shell pieces"
-            body="Feature pages share the same page-frame and card primitives, which keeps later stories from rebuilding basic structure."
+            label="Explore"
+            title="Discover unexpected connections"
+            body="Wikipedia's web of articles hides surprising shortcuts. The best racers find paths others never thought of."
           />
         </div>
       </section>

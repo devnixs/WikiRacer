@@ -33,8 +33,8 @@
           </div>
 
           <div class="metric-grid">
-            <app-metric-tile [label]="localization.t('lobby.code')" [value]="currentLobby.publicLobbyId" hint="The public-safe identifier used in the canonical share URL." />
-            <app-metric-tile [label]="localization.t('lobby.players')" [value]="currentLobby.players.length + '/' + currentLobby.settings.playerCap" hint="Joining stops cleanly when the room reaches capacity." />
+            <app-metric-tile [label]="localization.t('lobby.code')" [value]="currentLobby.publicLobbyId" hint="Share this code with friends so they can find your lobby." />
+            <app-metric-tile [label]="localization.t('lobby.players')" [value]="currentLobby.players.length + '/' + currentLobby.settings.playerCap" hint="Once the lobby is full, no more players can join." />
             <app-metric-tile [label]="localization.t('lobby.language')" [value]="localization.t(currentLobby.settings.language === 'en' ? 'language.en' : 'language.fr')" [hint]="localization.t('lobby.hostLanguageHint')" />
           </div>
 
@@ -47,7 +47,7 @@
             <app-feature-card
               label="Join State"
               [title]="currentLobby.players.length >= currentLobby.settings.playerCap ? localization.t('lobby.joinState.full') : localization.t('lobby.joinState.open')"
-              body="Invalid, expired, and full lobby states are surfaced through backend error payloads so the route entry path can fail clearly."
+              [body]="currentLobby.players.length >= currentLobby.settings.playerCap ? 'The lobby is at capacity — the race can begin!' : 'Share the invite link above to bring more friends into the race.'"
             />
           </div>
 
@@ -206,7 +206,7 @@
             <div class="joined-banner">
               <p class="joined-banner__title">{{ localization.t('lobby.joined') }} {{ sessionDisplayName() }}</p>
               <p class="joined-banner__body">
-                Share this link with friends. Reopening it in the same runtime session will join without asking for your name again.
+                You're in! Share the invite link above to bring your friends into the race.
               </p>
             </div>
           } @else {

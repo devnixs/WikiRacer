@@ -153,10 +153,10 @@
 .article-area {
   display: grid;
   gap: 0.75rem;
-  padding: 1rem 1.15rem;
-  border-radius: var(--radius-card);
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-raised);
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #a2a9b1;
+  background: #ffffff;
 }
 
 .article-shell__source {
@@ -181,43 +181,13 @@
 }
 
 .article-surface {
-  display: grid;
-  gap: 0.75rem;
-  line-height: 1.7;
-  color: var(--color-text);
-
-  :where(h1, h2, h3, h4) {
-    margin: 1.2rem 0 0.4rem;
-    color: var(--color-ink);
-    line-height: 1.2;
-  }
-
-  :where(p, ul, ol, blockquote, table) {
-    margin: 0;
-  }
-
-  :where(ul, ol) {
-    padding-left: 1.3rem;
-  }
-
-  :where(a) {
-    color: var(--color-accent-strong);
-  }
-
-  :where(table) {
-    width: 100%;
-    border-collapse: collapse;
-    overflow: hidden;
-    border-radius: var(--radius-xs);
-    background: var(--color-surface-glass);
-  }
-
-  :where(th, td) {
-    padding: 0.6rem;
-    border: 1px solid var(--color-border-subtle);
-    text-align: left;
-    vertical-align: top;
-  }
+  display: block;
+  min-width: 0;
+  overflow-wrap: break-word;
+  color: #202122;
+  font-family: sans-serif;
+  font-size: 0.94rem;
+  line-height: 1.6;
 }
 
 /* ── Race status panel ─────────────────────────────────────────────────────── */

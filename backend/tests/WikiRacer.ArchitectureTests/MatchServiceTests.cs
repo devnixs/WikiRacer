@@ -27,7 +27,12 @@ public class MatchServiceTests
             new SystemClock(),
             lobbyRepository);
         await articleService.UpdateLobbyArticleAsync(new UpdateLobbyArticleCommand(createResult.Lobby.PublicId.Value, createResult.Session.PlayerId.ToString(), "start", "Paris"), CancellationToken.None);
-        await articleService.UpdateLobbyArticleAsync(new UpdateLobbyArticleCommand(createResult.Lobby.PublicId.Value, createResult.Session.PlayerId.ToString(), "target", "Lyon"), CancellationToken.None);
+        var targetArticleService = new WikipediaArticleService(
+            new FakeWikipediaArticleClient(new ResolvedArticle("Lyon", "Lyon", "/wiki/Lyon")),
+            new FakePlayableArticleSelector(new ResolvedArticle("Lyon", "Lyon", "/wiki/Lyon")),
+            new SystemClock(),
+            lobbyRepository);
+        await targetArticleService.UpdateLobbyArticleAsync(new UpdateLobbyArticleCommand(createResult.Lobby.PublicId.Value, createResult.Session.PlayerId.ToString(), "target", "Lyon"), CancellationToken.None);
 
         var matchService = new MatchService(
             lobbyRepository,
@@ -40,6 +45,11 @@ public class MatchServiceTests
         Assert.Equal("fr", match.Language);
         Assert.Equal(WikiRacer.Domain.Lobbies.LobbyStatus.InMatch, createResult.Lobby.Status);
         Assert.Equal(2, match.Players.Count);
+        Assert.All(match.Players, player =>
+        {
+            Assert.Equal("Paris", player.CurrentArticleTitle);
+            Assert.Equal(0, player.HopCount);
+        });
     }
 
     [Fact]
