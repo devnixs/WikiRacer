@@ -1,0 +1,70 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Theme — single source of truth for all design tokens.
+// Change values here to retheme the entire application.
+// ─────────────────────────────────────────────────────────────────────────────
+
+:root {
+  color-scheme: light;
+
+  // ── Page backgrounds ────────────────────────────────────────────────────────
+  --color-bg:             #f8fafc;
+  --color-surface:        #ffffff;
+  --color-surface-alt:    #f1f5f9;
+  --color-surface-raised: rgba(255, 255, 255, 0.95); // panels on the page
+  --color-surface-glass:  rgba(255, 255, 255, 0.7); // input/select backgrounds
+
+  // ── Text ────────────────────────────────────────────────────────────────────
+  --color-ink:       #0f172a; // headings
+  --color-text:      #334155; // body copy
+  --color-text-muted: #64748b;
+
+  // ── Borders ─────────────────────────────────────────────────────────────────
+  --color-border:        rgba(15, 23, 42, 0.12);
+  --color-border-subtle: rgba(15, 23, 42, 0.06);
+  --color-border-input:  rgba(15, 23, 42, 0.18);
+
+  // ── Accent ──────────────────────────────────────────────────────────────────
+  --color-accent:       #6d28d9; // vivid violet
+  --color-accent-strong: #5b21b6;
+  --color-accent-soft:  #ddd6fe;
+  --color-accent-alt:   #0284c7; // vivid sky blue
+  --color-accent-tint:  rgba(109, 40, 217, 0.08); // accent at low opacity
+  --color-on-accent:    #ffffff; // text color on accent background
+
+  // ── Semantic: warning ────────────────────────────────────────────────────────
+  --color-warning-text:   #854d0e;
+  --color-warning-bg:     rgba(254, 240, 138, 0.6);
+  --color-warning-border: rgba(234, 179, 8, 0.4);
+
+  // ── Semantic: success ────────────────────────────────────────────────────────
+  --color-success-bg:     rgba(187, 247, 208, 0.6);
+  --color-success-border: rgba(34, 197, 94, 0.4);
+
+  // ── Semantic: error ──────────────────────────────────────────────────────────
+  --color-error: #dc2626;
+
+  // ── Gradients ───────────────────────────────────────────────────────────────
+  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-alt));
+  --gradient-hero:   linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.8));
+
+  // ── Border radius ───────────────────────────────────────────────────────────
+  --radius-pill:  0.5rem;   // replaced pill with soft rectangle
+  --radius-panel: 1.5rem;   // top-level shell panels
+  --radius-card:  1rem;     // inner content panels
+  --radius-sm:    0.75rem;  // banners, messages
+  --radius-xs:    0.5rem;   // player rows, small cards
+
+  // ── Shadows ─────────────────────────────────────────────────────────────────
+  --shadow-soft:   0 10px 40px rgba(15, 23, 42, 0.04);
+  --shadow-strong: 0 20px 60px rgba(15, 23, 42, 0.08), 0 0 30px rgba(109, 40, 217, 0.04);
+
+  // ── Typography ──────────────────────────────────────────────────────────────
+  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  // ── Component sizes ─────────────────────────────────────────────────────────
+  --btn-height:    3rem;
+  --btn-height-sm: 2.5rem;
+  --input-height:  3rem;
+}

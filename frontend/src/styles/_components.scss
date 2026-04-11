@@ -1,0 +1,115 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Components — shared UI primitives used across the whole app.
+// All visual values reference tokens from _theme.scss.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Buttons ──────────────────────────────────────────────────────────────────
+//
+// Usage:
+//   <button>                          primary (gradient)
+//   <button class="btn-sm">           primary, compact
+//   <button class="btn-secondary">    secondary (outlined)
+//   <button class="btn-sm btn-secondary"> secondary, compact
+
+button {
+  min-height: var(--btn-height);
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.25);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.btn-sm {
+  min-height: var(--btn-height-sm);
+  padding: 0 1rem;
+  font-size: 0.88rem;
+}
+
+.btn-secondary {
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-input);
+  color: var(--color-accent-strong);
+}
+
+// ── Form fields ───────────────────────────────────────────────────────────────
+
+input,
+select {
+  min-height: var(--input-height);
+  padding: 0 1.2rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-input);
+  background: var(--color-surface-glass);
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-tint);
+    background: var(--color-surface-raised);
+  }
+}
+
+// ── Panels ────────────────────────────────────────────────────────────────────
+//
+// Add class="panel" to any container that needs the standard surface treatment.
+
+.panel {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.5rem 1.75rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-raised);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+// ── Status messages ───────────────────────────────────────────────────────────
+
+.status-message {
+  margin: 0;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-muted);
+
+  &--error {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-error);
+  }
+}
+
+// ── Error text ────────────────────────────────────────────────────────────────
+
+.error-text {
+  margin: 0;
+  color: var(--color-error);
+  line-height: 1.5;
+}

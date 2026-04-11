@@ -1,0 +1,49 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Base — html/body reset and global typography.
+// ─────────────────────────────────────────────────────────────────────────────
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(109, 40, 217, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at bottom right, rgba(2, 132, 199, 0.08) 0%, transparent 40%),
+    var(--color-bg);
+  background-attachment: fixed;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  background: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+a {
+  color: inherit;
+}
