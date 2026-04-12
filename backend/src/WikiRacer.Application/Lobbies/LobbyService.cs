@@ -2,6 +2,7 @@ using System.Net;
 using WikiRacer.Application.Abstractions.Clock;
 using WikiRacer.Application.Abstractions.Identifiers;
 using WikiRacer.Application.Abstractions.Lobbies;
+using WikiRacer.Application.Abstractions.Matches;
 using WikiRacer.Application.Abstractions.Sessions;
 using WikiRacer.Application.Abstractions.Tokens;
 using WikiRacer.Domain.Languages;
@@ -12,6 +13,7 @@ namespace WikiRacer.Application.Lobbies;
 
 public sealed class LobbyService(
     ILobbyRepository lobbyRepository,
+    IMatchRepository matchRepository,
     IPlayerSessionStore playerSessionStore,
     IPublicLobbyIdGenerator publicLobbyIdGenerator,
     ISessionTokenFactory sessionTokenFactory,
@@ -80,9 +82,12 @@ public sealed class LobbyService(
 
             if (!lobby.IsJoinable(clock.UtcNow))
             {
-                var errorCode = lobby.IsFull ? LobbyFull : LobbyNotJoinable;
-                var message = lobby.IsFull ? "Lobby is full." : "Lobby is not joinable.";
-                throw new LobbyOperationException(errorCode, message, (int)HttpStatusCode.Conflict);
+                if (lobby.Status == LobbyStatus.InMatch)
+                {
+                    return JoinActiveMatch(lobby, command.DisplayName, cancellationToken);
+                }
+
+                ThrowNotJoinable(lobby);
             }
 
             var player = lobby.AddPlayer(PlayerId.New(), command.DisplayName);
@@ -176,6 +181,63 @@ public sealed class LobbyService(
         await playerSessionStore.SaveAsync(refreshedSession, cancellationToken);
 
         return new JoinLobbyResult(lobby, refreshedSession, WasReconnect: true);
+    }
+
+    private JoinLobbyResult JoinActiveMatch(Lobby lobby, string displayName, CancellationToken cancellationToken)
+    {
+        if (lobby.IsFull)
+        {
+            ThrowNotJoinable(lobby);
+        }
+
+        var activeMatchId = lobby.ActiveMatchId;
+
+        if (activeMatchId is null)
+        {
+            throw new LobbyOperationException(LobbyNotJoinable, "Lobby match state is not available.", (int)HttpStatusCode.Conflict);
+        }
+
+        var match = matchRepository.GetByIdAsync(activeMatchId.Value, cancellationToken).GetAwaiter().GetResult();
+
+        if (match is null)
+        {
+            throw new LobbyOperationException(LobbyNotJoinable, "Lobby match state is not available.", (int)HttpStatusCode.Conflict);
+        }
+
+        lock (match)
+        {
+            try
+            {
+                if (match.Status != WikiRacer.Domain.Matches.MatchStatus.InProgress)
+                {
+                    throw new InvalidOperationException("Match is not accepting players.");
+                }
+
+                var playerId = PlayerId.New();
+                var player = lobby.AddPlayerDuringMatch(playerId, displayName);
+                match.AddPlayer(player.PlayerId, player.DisplayName, player.IsConnected);
+
+                var session = CreateSession(lobby, player.PlayerId, player.DisplayName);
+                playerSessionStore.SaveAsync(session, cancellationToken).GetAwaiter().GetResult();
+
+                return new JoinLobbyResult(lobby, session, WasReconnect: false);
+            }
+            catch (InvalidOperationException exception) when (exception.Message.Contains("full", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new LobbyOperationException(LobbyFull, "Lobby is full.", (int)HttpStatusCode.Conflict);
+            }
+            catch (InvalidOperationException exception)
+            {
+                throw new LobbyOperationException(LobbyNotJoinable, exception.Message, (int)HttpStatusCode.Conflict);
+            }
+        }
+    }
+
+    private static void ThrowNotJoinable(Lobby lobby)
+    {
+        var errorCode = lobby.IsFull ? LobbyFull : LobbyNotJoinable;
+        var message = lobby.IsFull ? "Lobby is full." : "Lobby is not joinable.";
+        throw new LobbyOperationException(errorCode, message, (int)HttpStatusCode.Conflict);
     }
 
     private async Task<Lobby> GetLobbyOrThrowAsync(string publicLobbyId, CancellationToken cancellationToken)

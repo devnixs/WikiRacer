@@ -59,6 +59,25 @@ public sealed class Match
         return _players.SingleOrDefault(player => player.PlayerId == playerId);
     }
 
+    public MatchPlayer AddPlayer(PlayerId playerId, string displayName, bool isConnected)
+    {
+        if (Status != MatchStatus.InProgress)
+        {
+            throw new InvalidOperationException("Match is not accepting players.");
+        }
+
+        if (FindPlayer(playerId) is not null)
+        {
+            throw new InvalidOperationException("Player is already part of the match.");
+        }
+
+        var player = new MatchPlayer(playerId, displayName, isConnected);
+        player.BeginAtArticle(StartArticle.Title.Value);
+        _players.Add(player);
+        TimelineSequence++;
+        return player;
+    }
+
     public void ReportProgress(PlayerId playerId, string canonicalArticleTitle, DateTimeOffset reportedAtUtc)
     {
         var player = RequirePlayer(playerId);

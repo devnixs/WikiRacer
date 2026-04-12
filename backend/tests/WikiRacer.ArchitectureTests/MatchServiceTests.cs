@@ -53,6 +53,34 @@ public class MatchServiceTests
     }
 
     [Fact]
+    public async Task JoinAsync_Should_Add_Player_To_Active_Match()
+    {
+        var lobbyRepository = new InMemoryLobbyRepository();
+        var matchRepository = new InMemoryMatchRepository();
+        var lobbyService = LobbyServiceTestsFactory.Create(lobbyRepository, matchRepository);
+        var createResult = await lobbyService.CreateAsync(new CreateLobbyCommand("Host", "fr", "fr", 3, 600), CancellationToken.None);
+        await SetupMatchArticlesAsync(lobbyRepository, createResult);
+
+        var matchService = new MatchService(
+            lobbyRepository,
+            matchRepository,
+            new FakeWikipediaArticleClient(new ResolvedArticle("Paris", "Paris", "/wiki/Paris")),
+            new SystemClock());
+
+        var match = await matchService.StartAsync(new StartMatchCommand(createResult.Lobby.PublicId.Value, createResult.Session.PlayerId.ToString()), CancellationToken.None);
+        var joinResult = await lobbyService.JoinAsync(new JoinLobbyCommand(createResult.Lobby.PublicId.Value, "Late Guest", null), CancellationToken.None);
+
+        Assert.Equal(WikiRacer.Domain.Lobbies.LobbyStatus.InMatch, joinResult.Lobby.Status);
+        Assert.Contains(joinResult.Lobby.Players, player => player.PlayerId == joinResult.Session.PlayerId && player.DisplayName == "Late Guest");
+        Assert.Contains(match.Players, player =>
+            player.PlayerId == joinResult.Session.PlayerId
+            && player.DisplayName == "Late Guest"
+            && player.CurrentArticleTitle == "Paris"
+            && player.HopCount == 0
+            && player.Status == WikiRacer.Domain.Matches.MatchPlayerRaceStatus.Active);
+    }
+
+    [Fact]
     public async Task ReportProgressAsync_Should_Finish_Player_When_Target_Is_Reached()
     {
         var lobbyRepository = new InMemoryLobbyRepository();

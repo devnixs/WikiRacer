@@ -104,6 +104,10 @@ type TranslationKey =
   | 'match.place'
   | 'match.dismiss'
   | 'match.matchComplete'
+  | 'match.joinInProgressTitle'
+  | 'match.joinInProgressBody'
+  | 'match.joinInProgressButton'
+  | 'match.joinError'
   | 'results.eyebrow'
   | 'results.title'
   | 'results.description'
@@ -228,6 +232,10 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'match.place': 'Place',
     'match.dismiss': 'Dismiss',
     'match.matchComplete': 'Match complete',
+    'match.joinInProgressTitle': 'Join this match',
+    'match.joinInProgressBody': 'Enter a display name to join the race already in progress.',
+    'match.joinInProgressButton': 'Join match',
+    'match.joinError': 'The match could not be joined.',
     'results.eyebrow': 'Results',
     'results.title': 'Race summary',
     'results.description': 'Here\'s how your solo race went.',
@@ -351,6 +359,10 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'match.place': 'Rang',
     'match.dismiss': 'Ignorer',
     'match.matchComplete': 'Course terminée',
+    'match.joinInProgressTitle': 'Rejoindre cette partie',
+    'match.joinInProgressBody': 'Entrez un nom pour rejoindre la course déjà en cours.',
+    'match.joinInProgressButton': 'Rejoindre la partie',
+    'match.joinError': 'La partie n\u2019a pas pu être rejointe.',
     'results.eyebrow': 'Résultats',
     'results.title': 'Récapitulatif de la course',
     'results.description': 'Voilà comment s\u2019est passée votre course solo.',

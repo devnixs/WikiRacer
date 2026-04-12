@@ -57,6 +57,31 @@
           <p class="finish-banner">{{ localization.t('match.matchComplete') }}</p>
         }
 
+        @if (needsMultiplayerJoin()) {
+          <form class="match-join" (ngSubmit)="joinMultiplayerMatch()">
+            <div class="match-join__copy">
+              <label for="match-join-name">{{ localization.t('match.joinInProgressTitle') }}</label>
+              <p>{{ localization.t('match.joinInProgressBody') }}</p>
+            </div>
+            <div class="match-join__controls">
+              <input
+                id="match-join-name"
+                name="matchJoinName"
+                [(ngModel)]="joinName"
+                [disabled]="isJoining()"
+                [placeholder]="localization.t('home.create.placeholder')"
+                autocomplete="nickname"
+              />
+              <button type="submit" class="btn-sm" [disabled]="isJoining() || !joinName.trim()">
+                {{ isJoining() ? localization.t('lobby.joining') : localization.t('match.joinInProgressButton') }}
+              </button>
+            </div>
+            @if (joinError(); as error) {
+              <p class="match-join__error">{{ error }}</p>
+            }
+          </form>
+        }
+
         <!-- Finish and abandon announcements -->
         @for (announcement of announcements(); track announcement.id) {
           <div class="announcement" [class.announcement--finish]="announcement.type === 'finish'" [class.announcement--abandon]="announcement.type === 'abandon'">
@@ -79,11 +104,12 @@
           </div>
         }
 
-        <!-- Three-pane match layout -->
-        <div class="match-layout">
+        @if (!needsMultiplayerJoin()) {
+          <!-- Three-pane match layout -->
+          <div class="match-layout">
 
-          <!-- LEFT: Table of contents -->
-          <aside class="toc-panel">
+            <!-- LEFT: Table of contents -->
+            <aside class="toc-panel">
             <p class="toc-panel__heading">{{ localization.t('match.toc') }}</p>
             @if (tocEntries().length > 0) {
               <button type="button" class="toc-toggle-btn" (click)="toggleToc()">
@@ -103,10 +129,10 @@
             } @else {
               <p class="toc-panel__empty">—</p>
             }
-          </aside>
+            </aside>
 
-          <!-- CENTER: Article reading area -->
-          <main class="article-area">
+            <!-- CENTER: Article reading area -->
+            <main class="article-area">
             <div class="article-shell__source">
               <p class="article-shell__eyebrow">{{ localization.t('match.sourceLink') }}</p>
               @if (renderedArticle(); as article) {
@@ -121,10 +147,10 @@
             } @else {
               <p class="status-message">{{ localization.t('match.viewer.empty') }}</p>
             }
-          </main>
+            </main>
 
-          <!-- RIGHT: Race status panel -->
-          <aside class="race-status">
+            <!-- RIGHT: Race status panel -->
+            <aside class="race-status">
             <p class="race-status__heading">{{ localization.t('match.raceStatus') }}</p>
 
             <!-- Timer (desktop) -->
@@ -208,8 +234,9 @@
                 }
               </div>
             }
-          </aside>
+            </aside>
 
-        </div>
+          </div>
+        }
       }
     </app-page-frame>

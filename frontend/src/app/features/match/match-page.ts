@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalizationService } from '../../core/localization/localization.service';
@@ -46,11 +47,12 @@ interface MatchSnapshotWsPayload {
 
 @Component({
   selector: 'app-match-page',
-  imports: [CommonModule, PageFrameComponent, ChipComponent],
+  imports: [CommonModule, FormsModule, PageFrameComponent, ChipComponent],
   templateUrl: './match-page.html',
   styleUrl: './match-page.scss'
 })
 export class MatchPageComponent implements OnInit, OnDestroy {
+  protected joinName = '';
   protected readonly publicLobbyId = signal<string | null>(null);
   protected readonly lobby = signal<LobbyStateView | null>(null);
   protected readonly renderedArticle = signal<ArticleRenderResponse | null>(null);
@@ -61,7 +63,9 @@ export class MatchPageComponent implements OnInit, OnDestroy {
   protected readonly multiplayerMatch = signal<MatchStateView | null>(null);
   protected readonly announcements = signal<readonly MatchAnnouncement[]>([]);
   protected readonly isLoading = signal(true);
+  protected readonly isJoining = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly joinError = signal<string | null>(null);
   protected readonly localization = inject(LocalizationService);
   protected readonly isMultiplayerMode = signal(false);
   protected readonly elapsedSeconds = signal(0);
@@ -76,6 +80,8 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     const playerId = this.currentPlayerId();
     return match?.players.find((player) => player.playerId === playerId) ?? null;
   });
+  protected readonly needsMultiplayerJoin = computed(() =>
+    this.isMultiplayerMode() && !!this.multiplayerMatch() && !this.currentMultiplayerPlayer());
   protected readonly sourceDisplay = computed(() => this.multiplayerMatch()?.startArticle.displayTitle ?? this.lobby()?.settings.startArticle?.displayTitle ?? this.localization.t('lobby.notSelected'));
   protected readonly targetDisplay = computed(() => this.multiplayerMatch()?.targetArticle.displayTitle ?? this.lobby()?.settings.targetArticle?.displayTitle ?? this.localization.t('lobby.notSelected'));
   protected readonly currentArticleDisplay = computed(() => this.currentMultiplayerPlayer()?.currentArticleTitle ?? this.soloRace()?.currentArticleTitle ?? this.localization.t('lobby.notSelected'));
@@ -219,6 +225,47 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     this.restartMultiplayerTimer(updated);
   }
 
+  protected async joinMultiplayerMatch(): Promise<void> {
+    const publicLobbyId = this.publicLobbyId();
+    const displayName = this.joinName.trim();
+
+    if (!publicLobbyId || !displayName || this.isJoining()) {
+      return;
+    }
+
+    this.isJoining.set(true);
+    this.joinError.set(null);
+
+    try {
+      const response = await this.lobbyApi.joinLobby(publicLobbyId, {
+        displayName,
+        reconnectToken: null
+      });
+
+      this.lobby.set(response.lobby);
+      this.session.set({
+        publicLobbyId,
+        playerId: response.playerId,
+        displayName,
+        reconnectToken: response.reconnectToken,
+        connectionToken: response.connectionToken
+      });
+      this.lobbySessionService.save(this.session()!);
+      this.connectRealtime(publicLobbyId, response.reconnectToken);
+
+      const match = await this.matchApi.getByLobby(publicLobbyId);
+      this.multiplayerMatch.set(match);
+      this.restartMultiplayerTimer(match);
+      this.joinName = '';
+
+      await this.renderArticle(response.lobby.settings.language, match.startArticle.title, publicLobbyId);
+    } catch (error) {
+      this.joinError.set(this.readErrorMessage(error, this.localization.t('match.joinError')));
+    } finally {
+      this.isJoining.set(false);
+    }
+  }
+
   private handleWsMessage(messageType: string, payload: unknown): void {
     if (messageType === 'match.snapshot') {
       const event = payload as MatchSnapshotWsPayload;
@@ -348,18 +395,21 @@ export class MatchPageComponent implements OnInit, OnDestroy {
       if (isMultiplayer) {
         const session = this.session();
 
-        if (session?.reconnectToken && this.connectedLobbyId !== publicLobbyId) {
-          this.connectedLobbyId = publicLobbyId;
-          this.lobbyRealtime.connect(publicLobbyId, session.reconnectToken, {
-            onMessage: (type, payload) => this.handleWsMessage(type, payload),
-            onError: () => { /* non-fatal: REST still provides state */ }
-          });
+        if (session?.reconnectToken) {
+          this.connectRealtime(publicLobbyId, session.reconnectToken);
         }
 
         const match = await this.matchApi.getByLobby(publicLobbyId);
         this.multiplayerMatch.set(match);
         this.soloRace.set(null);
         this.restartMultiplayerTimer(match);
+
+        if (!this.currentMultiplayerPlayer()) {
+          this.renderedArticle.set(null);
+          this.renderedHtml.set(null);
+          this.tocEntries.set([]);
+          return;
+        }
 
         const requestedTitle = this.route.snapshot.queryParamMap.get('article')?.trim()
           || this.currentMultiplayerPlayer()?.currentArticleTitle
@@ -411,6 +461,18 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  private connectRealtime(publicLobbyId: string, reconnectToken: string): void {
+    if (this.connectedLobbyId === publicLobbyId) {
+      return;
+    }
+
+    this.connectedLobbyId = publicLobbyId;
+    this.lobbyRealtime.connect(publicLobbyId, reconnectToken, {
+      onMessage: (type, payload) => this.handleWsMessage(type, payload),
+      onError: () => { /* non-fatal: REST still provides state */ }
+    });
   }
 
   private async renderArticle(language: string, requestedTitle: string, publicLobbyId: string): Promise<void> {

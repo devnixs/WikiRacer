@@ -73,6 +73,21 @@ public sealed class Lobby
         return AddPlayerInternal(playerId, displayName, isHost: false);
     }
 
+    public LobbyPlayer AddPlayerDuringMatch(PlayerId playerId, string displayName)
+    {
+        if (Status != LobbyStatus.InMatch)
+        {
+            throw new InvalidOperationException("Lobby is not in an active match.");
+        }
+
+        if (IsFull)
+        {
+            throw new InvalidOperationException("Lobby is already full.");
+        }
+
+        return AddPlayerInternal(playerId, displayName, isHost: false);
+    }
+
     public LobbyPlayer? FindPlayer(PlayerId playerId)
     {
         return _players.SingleOrDefault(player => player.PlayerId == playerId);

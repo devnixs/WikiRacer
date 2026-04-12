@@ -78,6 +78,12 @@ public sealed class LobbiesController(
                 result.WasReconnect ? "player_reconnected" : "player_joined",
                 cancellationToken);
 
+            if (result.Lobby.ActiveMatchId is not null)
+            {
+                var match = await matchService.GetByLobbyPublicIdAsync(publicLobbyId, cancellationToken);
+                await realtimeHub.BroadcastMatchSnapshotAsync(publicLobbyId, match.ToContract(), cancellationToken);
+            }
+
             return Ok(new JoinLobbyResponse(
                 result.Session.PlayerId.ToString(),
                 result.Session.ConnectionToken,
