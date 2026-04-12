@@ -258,9 +258,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
         requestedByPlayerId: session.playerId
       });
 
-      await this.router.navigate(['/match', publicLobbyId], {
-        queryParams: { mode: 'multiplayer' }
-      });
+      await this.openMultiplayerMatch(publicLobbyId);
     } catch (error) {
       this.joinError.set(this.readErrorMessage(error, this.localization.t('match.multiplayerStartError')));
       this.isStartingMultiplayer.set(false);
@@ -466,11 +464,9 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     this.syncSearchInputs(lobby);
     this.startCountdownTimer(lobby);
 
-    if (this.joinState() && this.isLobbyInMatch(lobby)) {
+    if ((this.joinState() || this.session()) && this.isLobbyInMatch(lobby)) {
       this.isStartingMultiplayer.set(false);
-      void this.router.navigate(['/match', lobby.publicLobbyId], {
-        queryParams: { mode: 'multiplayer' }
-      });
+      void this.openMultiplayerMatch(lobby.publicLobbyId);
     }
   }
 
@@ -495,6 +491,8 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
 
         if (this.isHost() && this.canStartMultiplayer()) {
           void this.startMultiplayerMatch();
+        } else if (this.session()) {
+          void this.refreshMatchStartAfterCountdown(lobby.publicLobbyId, 10);
         }
       }
     };
@@ -511,5 +509,28 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
       window.clearInterval(this.countdownTimer);
       this.countdownTimer = null;
     }
+  }
+
+  private async refreshMatchStartAfterCountdown(publicLobbyId: string, attemptsRemaining: number): Promise<void> {
+    try {
+      const lobby = await this.lobbyApi.getLobby(publicLobbyId);
+      this.applyLobbySnapshot(lobby);
+
+      if (!this.isLobbyInMatch(lobby) && attemptsRemaining > 1 && this.publicLobbyId() === publicLobbyId) {
+        window.setTimeout(() => void this.refreshMatchStartAfterCountdown(publicLobbyId, attemptsRemaining - 1), 500);
+      }
+    } catch (error) {
+      this.realtimeError.set(this.readErrorMessage(error, this.localization.t('lobby.realtimeError')));
+    }
+  }
+
+  private async openMultiplayerMatch(publicLobbyId: string): Promise<void> {
+    if (this.router.url.startsWith(`/match/${publicLobbyId}`)) {
+      return;
+    }
+
+    await this.router.navigate(['/match', publicLobbyId], {
+      queryParams: { mode: 'multiplayer' }
+    });
   }
 }
