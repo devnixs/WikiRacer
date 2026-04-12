@@ -46,6 +46,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
   protected readonly isSearchingTarget = signal(false);
   protected readonly isRandomizingStart = signal(false);
   protected readonly isRandomizingTarget = signal(false);
+  protected readonly isStartingMultiplayer = signal(false);
   protected readonly copiedShareLink = signal(false);
   protected readonly sessionDisplayName = computed(() => this.session()?.displayName ?? '');
   protected readonly shareUrl = computed(() =>
@@ -245,10 +246,11 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     const publicLobbyId = this.publicLobbyId();
     const session = this.session();
 
-    if (!publicLobbyId || !session?.playerId || !this.canStartMultiplayer()) {
+    if (!publicLobbyId || !session?.playerId || !this.canStartMultiplayer() || this.isStartingMultiplayer()) {
       return;
     }
 
+    this.isStartingMultiplayer.set(true);
     this.joinError.set(null);
 
     try {
@@ -261,6 +263,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
       });
     } catch (error) {
       this.joinError.set(this.readErrorMessage(error, this.localization.t('match.multiplayerStartError')));
+      this.isStartingMultiplayer.set(false);
     }
   }
 
@@ -464,6 +467,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     this.startCountdownTimer(lobby);
 
     if (this.joinState() && this.isLobbyInMatch(lobby)) {
+      this.isStartingMultiplayer.set(false);
       void this.router.navigate(['/match', lobby.publicLobbyId], {
         queryParams: { mode: 'multiplayer' }
       });
@@ -485,6 +489,14 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     const update = () => {
       const remaining = Math.max(0, Math.ceil((Date.parse(lobby.countdown!.endsAtUtc) - Date.now()) / 1000));
       this.countdownSeconds.set(remaining);
+
+      if (remaining === 0) {
+        this.stopCountdownTimer();
+
+        if (this.isHost() && this.canStartMultiplayer()) {
+          void this.startMultiplayerMatch();
+        }
+      }
     };
 
     update();

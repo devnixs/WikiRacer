@@ -61,7 +61,12 @@
           }
 
           @if (isHost() && canStartMultiplayer()) {
-            <button type="button" class="ready-toggle" (click)="startMultiplayerMatch()">
+            <button
+              type="button"
+              class="ready-toggle"
+              (click)="startMultiplayerMatch()"
+              [disabled]="isStartingMultiplayer()"
+            >
               {{ localization.t('lobby.startMultiplayer') }}
             </button>
           } @else if (isLobbyInMatch(currentLobby)) {
