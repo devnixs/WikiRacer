@@ -1,0 +1,216 @@
+// Wikipedia article HTML is inserted with [innerHTML], so these rules live
+// globally and stay scoped by the article-surface class.
+
+.article-surface {
+  &::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
+
+  h1,
+  h2 {
+    margin: 1.1rem 0 0.5rem;
+    padding-bottom: 0.17rem;
+    border-bottom: 1px solid #a2a9b1;
+    color: #000000;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    clear: both;
+    font-size: 1.45rem;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0.9rem 0 0.3rem;
+    color: #000000;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  p {
+    margin: 0.45rem 0;
+  }
+
+  ul,
+  ol {
+    margin: 0.35rem 0 0.7rem 1.6rem;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 0.1rem;
+  }
+
+  a {
+    color: #36c;
+    text-decoration: none;
+  }
+
+  a:visited {
+    color: #6b4ba1;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  figure {
+    display: table;
+    box-sizing: border-box;
+    max-width: min(100%, 16.5rem);
+    margin: 0.5rem 0 0.8rem 1rem;
+    padding: 0.25rem;
+    clear: right;
+    float: right;
+    border: 1px solid #c8ccd1;
+    background: #f8f9fa;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  figure.mw-halign-left {
+    float: left;
+    clear: left;
+    margin-right: 1rem;
+    margin-left: 0;
+  }
+
+  figure.mw-halign-center,
+  figure.center,
+  .center {
+    float: none;
+    clear: both;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  figcaption {
+    display: table-caption;
+    caption-side: bottom;
+    padding-top: 0.25rem;
+    color: #202122;
+    font-size: 0.82rem;
+  }
+
+  table {
+    max-width: 100%;
+    margin: 0.5rem 0 1rem;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-size: 0.88rem;
+  }
+
+  th,
+  td {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #a2a9b1;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: #eaecf0;
+    font-weight: 700;
+  }
+
+  .infobox {
+    box-sizing: border-box;
+    width: 22rem;
+    max-width: min(100%, 22rem);
+    margin: 0.25rem 0 1rem 1rem;
+    clear: right;
+    float: right;
+    border: 1px solid #a2a9b1;
+    background: #f8f9fa;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .infobox caption,
+  .infobox-above {
+    background: #eaecf0;
+    font-size: 1.1em;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .infobox-subheader,
+  .infobox-header {
+    background: #eaecf0;
+    text-align: center;
+  }
+
+  .infobox th,
+  .infobox td {
+    border-color: #a2a9b1;
+  }
+
+  .thumb,
+  .tmulti {
+    max-width: 100%;
+    background: #f8f9fa;
+  }
+
+  .multiimageinner,
+  .trow {
+    max-width: 100%;
+  }
+
+  .trow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tsingle {
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 1px;
+    text-align: center;
+  }
+
+  .thumbcaption,
+  .text-align-center {
+    font-size: 0.82rem;
+    text-align: center;
+  }
+
+  .hatnote {
+    margin: 0.4rem 0 0.8rem 1.6rem;
+    font-style: italic;
+    color: #54595d;
+  }
+
+  .shortdescription,
+  .mw-empty-elt,
+  .noprint,
+  .metadata {
+    display: none;
+  }
+
+  blockquote {
+    margin: 0.7rem 2rem;
+  }
+
+  sup,
+  sub {
+    line-height: 1;
+  }
+}

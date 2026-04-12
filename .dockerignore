@@ -1,0 +1,8 @@
+.git
+.playwright-mcp
+**/bin
+**/obj
+**/node_modules
+**/.angular
+**/.DS_Store
+*.png

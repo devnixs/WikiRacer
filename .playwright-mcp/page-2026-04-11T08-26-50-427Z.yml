@@ -1,0 +1,59 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: WR
+      - generic [ref=e8]:
+        - paragraph [ref=e9]: WikiRacer
+        - paragraph [ref=e10]: Parcourez Wikipédia de lien en lien — trouvez le chemin le plus court vers la page cible avant tout le monde !
+    - navigation "Primary" [ref=e11]:
+      - link "Accueil" [ref=e12] [cursor=pointer]:
+        - /url: /
+      - link "Salon" [ref=e13] [cursor=pointer]:
+        - /url: /lobby
+      - link "Course" [ref=e14] [cursor=pointer]:
+        - /url: /match
+      - link "Résultats" [ref=e15] [cursor=pointer]:
+        - /url: /results
+  - main [ref=e16]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - paragraph [ref=e21]: Accueil
+        - heading "Combien de clics pour y arriver ?" [level=1] [ref=e22]
+        - paragraph [ref=e23]: Créez un salon, invitez vos amis et partez à la course à travers Wikipédia. Le chemin le plus court gagne.
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]: Créer un salon
+            - generic [ref=e29]:
+              - textbox "Créer un salon" [ref=e30]:
+                - /placeholder: Votre nom temporaire
+              - button "Créer le salon" [disabled] [ref=e31]
+          - generic [ref=e32]:
+            - article [ref=e34]:
+              - paragraph [ref=e35]: Game modes
+              - paragraph [ref=e36]: "2"
+              - paragraph [ref=e37]: Play solo to beat your own time, or race friends in multiplayer.
+            - article [ref=e39]:
+              - paragraph [ref=e40]: Languages
+              - paragraph [ref=e41]: "2"
+              - paragraph [ref=e42]: Race through English or French Wikipedia articles.
+            - article [ref=e44]:
+              - paragraph [ref=e45]: Multiplayer
+              - paragraph [ref=e46]: Live
+              - paragraph [ref=e47]: Races happen in real time — everyone navigates at the same moment.
+        - generic [ref=e48]:
+          - generic "Click links to hop between articles" [ref=e49]:
+            - article [ref=e50]:
+              - paragraph [ref=e51]: Navigate
+              - heading "Click links to hop between articles" [level=2] [ref=e52]
+              - paragraph [ref=e53]: Every click on a Wikipedia link counts as a hop. Find the shortest path from the start article to the target.
+          - generic "Race your friends in real time" [ref=e54]:
+            - article [ref=e55]:
+              - paragraph [ref=e56]: Compete
+              - heading "Race your friends in real time" [level=2] [ref=e57]
+              - paragraph [ref=e58]: Everyone starts at the same article and races to reach the target. First to arrive — or fewest hops — wins.
+          - generic "Discover unexpected connections" [ref=e59]:
+            - article [ref=e60]:
+              - paragraph [ref=e61]: Explore
+              - heading "Discover unexpected connections" [level=2] [ref=e62]
+              - paragraph [ref=e63]: Wikipedia's web of articles hides surprising shortcuts. The best racers find paths others never thought of.

@@ -1,0 +1,26 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: WR
+      - generic [ref=e8]:
+        - paragraph [ref=e9]: WikiRacer
+        - paragraph [ref=e10]: Parcourez Wikipédia de lien en lien — trouvez le chemin le plus court vers la page cible avant tout le monde !
+    - navigation "Primary" [ref=e11]:
+      - link "Accueil" [ref=e12] [cursor=pointer]:
+        - /url: /
+      - link "Salon" [ref=e13] [cursor=pointer]:
+        - /url: /lobby
+      - link "Course" [ref=e14] [cursor=pointer]:
+        - /url: /match
+      - link "Résultats" [ref=e15] [cursor=pointer]:
+        - /url: /results
+  - main [ref=e16]:
+    - generic [ref=e19]:
+      - generic [ref=e20]:
+        - paragraph [ref=e21]: Salon
+        - heading "Préparez votre course" [level=1] [ref=e22]
+        - paragraph [ref=e23]: Partagez le lien d’invitation avec vos amis, choisissez vos articles et lancez la partie quand tout le monde est prêt.
+      - article [ref=e27]:
+        - paragraph [ref=e28]: Entry
+        - heading "Aucun salon actif sélectionné" [level=2] [ref=e29]
+        - paragraph [ref=e30]: Créez un salon depuis la page d’accueil pour obtenir un lien à partager.
