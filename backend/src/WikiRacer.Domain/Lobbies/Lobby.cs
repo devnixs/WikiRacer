@@ -115,24 +115,6 @@ public sealed class Lobby
         IncrementRevision();
     }
 
-    public void SetPlayerReady(PlayerId requestedByPlayerId, bool isReady)
-    {
-        var player = FindPlayer(requestedByPlayerId);
-
-        if (player is null)
-        {
-            throw new InvalidOperationException("Player is not part of the lobby.");
-        }
-
-        if (Status != LobbyStatus.Waiting)
-        {
-            throw new InvalidOperationException("Lobby settings can only be changed before the match starts.");
-        }
-
-        player.SetReady(isReady);
-        IncrementRevision();
-    }
-
     public void MarkPlayerDisconnected(PlayerId requestedByPlayerId)
     {
         var player = FindPlayer(requestedByPlayerId);
@@ -159,13 +141,13 @@ public sealed class Lobby
         IncrementRevision();
     }
 
-    public bool CanStartCountdown()
+    public bool CanStartMatch()
     {
         return Status == LobbyStatus.Waiting
             && Settings.StartArticle is not null
             && Settings.TargetArticle is not null
             && _players.Count > 0
-            && _players.All(player => player.IsConnected && player.IsReady);
+            && _players.All(player => player.IsConnected);
     }
 
     public void SetCountdown(DateTimeOffset? endsAtUtc)

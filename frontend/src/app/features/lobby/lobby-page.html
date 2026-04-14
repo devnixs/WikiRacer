@@ -32,43 +32,16 @@
             </button>
           </div>
 
-          <div class="metric-grid">
-            <app-metric-tile [label]="localization.t('lobby.code')" [value]="currentLobby.publicLobbyId" hint="Share this code with friends so they can find your lobby." />
-            <app-metric-tile [label]="localization.t('lobby.players')" [value]="currentLobby.players.length + '/' + currentLobby.settings.playerCap" hint="Once the lobby is full, no more players can join." />
-            <app-metric-tile [label]="localization.t('lobby.language')" [value]="localization.t(currentLobby.settings.language === 'en' ? 'language.en' : 'language.fr')" [hint]="localization.t('lobby.hostLanguageHint')" />
-          </div>
-
-          <div class="card-grid">
-            <app-feature-card
-              label="Articles"
-              [title]="localization.t('lobby.selectedArticles')"
-              [body]="selectedArticlesSummary()"
-            />
-            <app-feature-card
-              label="Join State"
-              [title]="currentLobby.players.length >= currentLobby.settings.playerCap ? localization.t('lobby.joinState.full') : localization.t('lobby.joinState.open')"
-              [body]="currentLobby.players.length >= currentLobby.settings.playerCap ? 'The lobby is at capacity — the race can begin!' : 'Share the invite link above to bring more friends into the race.'"
-            />
-          </div>
-
-          @if (countdownSeconds() > 0) {
-            <div class="countdown-banner">
-              <span>{{ localization.t('lobby.countdown') }}</span>
-              <strong>{{ countdownSeconds() }}</strong>
-            </div>
-          } @else if (currentLobby.players.length > 1) {
-            <p class="status-message">{{ localization.t('lobby.countdownWaiting') }}</p>
-          }
-
           @if (isHost() && canStartMultiplayer()) {
             <button
               type="button"
-              class="ready-toggle"
               (click)="startMultiplayerMatch()"
               [disabled]="isStartingMultiplayer()"
             >
               {{ localization.t('lobby.startMultiplayer') }}
             </button>
+          } @else if (!isHost() && canStartMultiplayer()) {
+            <p class="status-message">{{ localization.t('lobby.countdownWaiting') }}</p>
           } @else if (isLobbyInMatch(currentLobby)) {
             <a class="viewer-link viewer-link--accent" [routerLink]="['/match', currentLobby.publicLobbyId]" [queryParams]="{ mode: 'multiplayer' }">
               {{ localization.t('lobby.openMultiplayer') }}
@@ -190,17 +163,6 @@
             @if (articleError(); as error) {
               <p class="join-form__error">{{ error }}</p>
             }
-          }
-
-          @if (joinState()) {
-            <button
-              type="button"
-              class="ready-toggle"
-              (click)="toggleReady()"
-              [disabled]="isUpdatingReady()"
-            >
-              {{ currentPlayerReady() ? localization.t('lobby.notReady') : localization.t('lobby.ready') }}
-            </button>
           }
 
           @if (realtimeError(); as error) {

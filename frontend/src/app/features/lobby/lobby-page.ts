@@ -41,7 +41,6 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
   protected readonly isLoading = signal(true);
   protected readonly isJoining = signal(false);
   protected readonly isUpdatingLanguage = signal(false);
-  protected readonly isUpdatingReady = signal(false);
   protected readonly isSearchingStart = signal(false);
   protected readonly isSearchingTarget = signal(false);
   protected readonly isRandomizingStart = signal(false);
@@ -64,7 +63,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
       && !!lobby.settings.startArticle
       && !!lobby.settings.targetArticle
       && lobby.players.length > 0
-      && lobby.players.every((player) => player.isConnected && player.isReady);
+      && lobby.players.every((player) => player.isConnected);
   });
   protected readonly isHost = computed(() => {
     const lobby = this.lobby();
@@ -94,12 +93,6 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     );
     return `${this.localization.t('lobby.source')}: ${source}. ${this.localization.t('lobby.target')}: ${target}.`;
   });
-  protected readonly currentPlayerReady = computed(() => {
-    const lobby = this.lobby();
-    const playerId = this.session()?.playerId;
-
-    return lobby?.players.find((player) => player.playerId === playerId)?.isReady ?? false;
-  });
   protected readonly playersSummary = computed(() => {
     const lobby = this.lobby();
 
@@ -108,7 +101,7 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     }
 
     return lobby.players
-      .map((player) => `${player.displayName} (${player.isReady ? this.localization.t('lobby.ready') : this.localization.t('lobby.notReady')})`)
+      .map((player) => player.displayName)
       .join(', ');
   });
 
@@ -215,30 +208,6 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
       this.joinError.set(this.readErrorMessage(error, 'Lobby could not be joined.'));
     } finally {
       this.isJoining.set(false);
-    }
-  }
-
-  protected async toggleReady(): Promise<void> {
-    const publicLobbyId = this.publicLobbyId();
-    const session = this.session();
-
-    if (!publicLobbyId || !session?.playerId || this.isUpdatingReady()) {
-      return;
-    }
-
-    this.isUpdatingReady.set(true);
-    this.joinError.set(null);
-
-    try {
-      const lobby = await this.lobbyApi.updateReady(publicLobbyId, session.playerId, {
-        isReady: !this.currentPlayerReady()
-      });
-
-      this.applyLobbySnapshot(lobby);
-    } catch (error) {
-      this.joinError.set(this.readErrorMessage(error, this.localization.t('lobby.realtimeError')));
-    } finally {
-      this.isUpdatingReady.set(false);
     }
   }
 
@@ -488,12 +457,6 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
 
       if (remaining === 0) {
         this.stopCountdownTimer();
-
-        if (this.isHost() && this.canStartMultiplayer()) {
-          void this.startMultiplayerMatch();
-        } else if (this.session()) {
-          void this.refreshMatchStartAfterCountdown(lobby.publicLobbyId, 10);
-        }
       }
     };
 
@@ -508,19 +471,6 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
     if (this.countdownTimer !== null) {
       window.clearInterval(this.countdownTimer);
       this.countdownTimer = null;
-    }
-  }
-
-  private async refreshMatchStartAfterCountdown(publicLobbyId: string, attemptsRemaining: number): Promise<void> {
-    try {
-      const lobby = await this.lobbyApi.getLobby(publicLobbyId);
-      this.applyLobbySnapshot(lobby);
-
-      if (!this.isLobbyInMatch(lobby) && attemptsRemaining > 1 && this.publicLobbyId() === publicLobbyId) {
-        window.setTimeout(() => void this.refreshMatchStartAfterCountdown(publicLobbyId, attemptsRemaining - 1), 500);
-      }
-    } catch (error) {
-      this.realtimeError.set(this.readErrorMessage(error, this.localization.t('lobby.realtimeError')));
     }
   }
 

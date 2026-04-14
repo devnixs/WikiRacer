@@ -61,8 +61,6 @@ type TranslationKey =
   | 'lobby.notSelected'
   | 'lobby.openViewer'
   | 'lobby.startSolo'
-  | 'lobby.ready'
-  | 'lobby.notReady'
   | 'lobby.countdown'
   | 'lobby.countdownWaiting'
   | 'lobby.realtimeError'
@@ -126,6 +124,9 @@ type TranslationKey =
   | 'results.finishTime'
   | 'results.status'
   | 'results.stillRacing'
+  | 'results.loading'
+  | 'results.exactPath'
+  | 'results.noPath'
   | 'language.fr'
   | 'language.en';
 
@@ -147,7 +148,7 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'home.create.error': 'The lobby could not be created right now.',
     'lobby.eyebrow': 'Lobby',
     'lobby.title': 'Set up your race',
-    'lobby.description': 'Share the invite link with your friends, pick your articles, and start when everyone is ready.',
+    'lobby.description': 'Share the invite link with your friends, pick your articles, and start when everyone is connected.',
     'lobby.loading': 'Loading lobby',
     'lobby.noSelection': 'No active lobby selected',
     'lobby.noSelection.body': 'Create a lobby from the home page to get a shareable invite link.',
@@ -189,12 +190,10 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'lobby.notSelected': 'Not selected',
     'lobby.openViewer': 'Open article viewer',
     'lobby.startSolo': 'Start solo race',
-    'lobby.ready': 'Ready',
-    'lobby.notReady': 'Not ready',
     'lobby.countdown': 'Countdown',
-    'lobby.countdownWaiting': 'Waiting for all players to be ready.',
+    'lobby.countdownWaiting': 'Waiting for the host to start the race.',
     'lobby.realtimeError': 'Realtime lobby sync is temporarily unavailable.',
-    'lobby.startMultiplayer': 'Start multiplayer match',
+    'lobby.startMultiplayer': 'Start',
     'lobby.openMultiplayer': 'Open multiplayer match',
     'match.eyebrow': 'Match',
     'match.title': 'Navigate from article to article',
@@ -254,6 +253,9 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'results.finishTime': 'Finish time',
     'results.status': 'Status',
     'results.stillRacing': 'Still racing',
+    'results.loading': 'Loading results...',
+    'results.exactPath': 'Exact path',
+    'results.noPath': 'No path recorded',
     'language.fr': 'French',
     'language.en': 'English'
   },
@@ -274,7 +276,7 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'home.create.error': 'Le salon ne peut pas être créé pour le moment.',
     'lobby.eyebrow': 'Salon',
     'lobby.title': 'Préparez votre course',
-    'lobby.description': 'Partagez le lien d\u2019invitation avec vos amis, choisissez vos articles et lancez la partie quand tout le monde est prêt.',
+    'lobby.description': 'Partagez le lien d\u2019invitation avec vos amis, choisissez vos articles et lancez la partie quand tout le monde est connecté.',
     'lobby.loading': 'Chargement du salon',
     'lobby.noSelection': 'Aucun salon actif sélectionné',
     'lobby.noSelection.body': 'Créez un salon depuis la page d\u2019accueil pour obtenir un lien à partager.',
@@ -304,8 +306,8 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'lobby.noSuggestions': 'Aucune suggestion de page jouable.',
     'lobby.pickSource': 'Utiliser comme source',
     'lobby.pickTarget': 'Utiliser comme cible',
-    'lobby.randomizeSource': 'Tirer une source',
-    'lobby.randomizeTarget': 'Tirer une cible',
+    'lobby.randomizeSource': 'Tirer une source au hasard',
+    'lobby.randomizeTarget': 'Tirer une cible au hasard',
     'lobby.randomizing': 'Tirage...',
     'lobby.selectionMode.manual': 'manuel',
     'lobby.selectionMode.random': 'aléatoire',
@@ -316,12 +318,10 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'lobby.notSelected': 'Non sélectionné',
     'lobby.openViewer': 'Ouvrir le lecteur d\u2019articles',
     'lobby.startSolo': 'Démarrer une course solo',
-    'lobby.ready': 'Prêt',
-    'lobby.notReady': 'Pas prêt',
     'lobby.countdown': 'Compte à rebours',
-    'lobby.countdownWaiting': 'En attente que tous les joueurs soient prêts.',
+    'lobby.countdownWaiting': 'En attente du lancement par l\u2019hôte.',
     'lobby.realtimeError': 'La synchronisation temps réel du salon est temporairement indisponible.',
-    'lobby.startMultiplayer': 'Démarrer la partie multijoueur',
+    'lobby.startMultiplayer': 'Démarrer',
     'lobby.openMultiplayer': 'Ouvrir la partie multijoueur',
     'match.eyebrow': 'Course',
     'match.title': 'Naviguez d\u2019article en article',
@@ -381,6 +381,9 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'results.finishTime': 'Temps d\u2019arrivée',
     'results.status': 'Statut',
     'results.stillRacing': 'Encore en course',
+    'results.loading': 'Chargement des résultats...',
+    'results.exactPath': 'Chemin exact',
+    'results.noPath': 'Aucun chemin enregistré',
     'language.fr': 'Français',
     'language.en': 'Anglais'
   }

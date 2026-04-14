@@ -59,6 +59,7 @@ export class MatchPageComponent implements OnInit, OnDestroy {
   protected readonly renderedHtml = signal<SafeHtml | null>(null);
   protected readonly tocEntries = signal<readonly TocEntry[]>([]);
   protected readonly tocExpanded = signal(false);
+  protected readonly playersPanelExpanded = signal(false);
   protected readonly soloRace = signal<SoloRaceSnapshot | null>(null);
   protected readonly multiplayerMatch = signal<MatchStateView | null>(null);
   protected readonly announcements = signal<readonly MatchAnnouncement[]>([]);
@@ -130,10 +131,14 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     this.tocExpanded.update((v) => !v);
   }
 
+  protected togglePlayersPanel(): void {
+    this.playersPanelExpanded.update((v) => !v);
+  }
+
   protected onTocClick(event: MouseEvent, id: string): void {
     event.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     this.tocExpanded.set(false);
+    requestAnimationFrame(() => this.scrollToArticleHeading(id));
   }
 
   protected playerStatusLabel(status: string): string {
@@ -197,6 +202,25 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     await this.router.navigate(['/match', publicLobbyId], {
       queryParams: { article: lobby.settings.startArticle.title, startSolo: null, mode: null },
       queryParamsHandling: 'merge'
+    });
+  }
+
+  private scrollToArticleHeading(id: string): void {
+    const target = document.getElementById(id);
+
+    if (!target) {
+      return;
+    }
+
+    const playerPanel = document.querySelector<HTMLElement>('.race-status__players');
+    const panelBottom = playerPanel && getComputedStyle(playerPanel).position === 'fixed'
+      ? playerPanel.getBoundingClientRect().bottom
+      : 0;
+    const topOffset = panelBottom + 12;
+
+    window.scrollTo({
+      top: target.getBoundingClientRect().top + window.scrollY - topOffset,
+      behavior: 'smooth'
     });
   }
 

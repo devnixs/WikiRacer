@@ -57,8 +57,6 @@
   color: var(--color-error);
 }
 
-/* ── Timer strip (mobile only) ─────────────────────────────────────────────── */
-
 .timer-strip {
   display: flex;
   align-items: center;
@@ -102,8 +100,6 @@
   margin-left: auto;
 }
 
-/* ── Match layout ──────────────────────────────────────────────────────────── */
-
 .match-layout {
   display: grid;
   gap: 1rem;
@@ -116,8 +112,6 @@
 .toc-panel    { grid-area: toc; }
 .article-area { grid-area: article; }
 .race-status  { grid-area: status; }
-
-/* ── TOC panel ─────────────────────────────────────────────────────────────── */
 
 .toc-panel {
   display: grid;
@@ -191,8 +185,6 @@
   font-size: 0.88rem;
 }
 
-/* ── Article area ──────────────────────────────────────────────────────────── */
-
 .article-area {
   display: grid;
   gap: 0.75rem;
@@ -232,8 +224,6 @@
   font-size: 0.94rem;
   line-height: 1.6;
 }
-
-/* ── Race status panel ─────────────────────────────────────────────────────── */
 
 .race-status {
   display: grid;
@@ -349,9 +339,16 @@
   gap: 0.5rem;
 }
 
-.race-status__players {
+.race-status__players,
+.race-status__players-list {
   display: grid;
   gap: 0.5rem;
+}
+
+.race-status__players-toggle {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .race-status__players-heading {
@@ -363,7 +360,9 @@
   color: var(--color-text-muted);
 }
 
-/* ── Player rows ───────────────────────────────────────────────────────────── */
+.race-status__players-list--hidden {
+  display: none;
+}
 
 .player-row {
   display: grid;
@@ -434,8 +433,6 @@
   color: var(--color-text-muted);
 }
 
-/* ── Announcements ─────────────────────────────────────────────────────────── */
-
 .announcement {
   display: flex;
   align-items: center;
@@ -475,7 +472,28 @@
   flex-shrink: 0;
 }
 
-/* ── Desktop layout ────────────────────────────────────────────────────────── */
+@media (max-width: 899.98px) {
+  .race-status__players {
+    position: fixed;
+    top: max(0.75rem, env(safe-area-inset-top));
+    left: 0.75rem;
+    z-index: 30;
+    width: calc(100vw - 1.5rem);
+    padding: 0.5rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-border-subtle);
+    background: var(--color-surface-raised);
+  }
+
+  .race-status__players-list {
+    max-height: min(60vh, 26rem);
+    overflow-y: auto;
+  }
+
+  .race-status__players-heading {
+    display: none;
+  }
+}
 
 @media (min-width: 900px) {
   .timer-strip {
@@ -525,5 +543,13 @@
 
   .race-status__timer {
     display: block;
+  }
+
+  .race-status__players-toggle {
+    display: none;
+  }
+
+  .race-status__players-list.race-status__players-list--hidden {
+    display: grid;
   }
 }

@@ -91,6 +91,10 @@ export class ResultsPageComponent implements OnInit {
     }
   }
 
+  protected recordedPath(titles: string[] | null | undefined): string[] {
+    return titles?.length ? titles : [this.localization.t('results.noPath')];
+  }
+
   private async loadResults(publicLobbyId: string | null): Promise<void> {
     this.isLoading.set(true);
     this.soloResult.set(null);

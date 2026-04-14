@@ -118,29 +118,6 @@ public sealed class LobbiesController(
         }
     }
 
-    [HttpPut("{publicLobbyId}/players/{playerId}/ready")]
-    public async Task<ActionResult> UpdateReady(
-        string publicLobbyId,
-        string playerId,
-        [FromBody] UpdateLobbyReadyRequest request,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var result = await lobbyService.UpdateReadyAsync(
-                new UpdateLobbyReadyCommand(publicLobbyId, playerId, request.IsReady),
-                cancellationToken);
-
-            await realtimeHub.BroadcastLobbyUpdatedAsync(result.Lobby, "player_ready_changed", cancellationToken);
-
-            return Ok(result.Lobby.ToContract());
-        }
-        catch (LobbyOperationException exception)
-        {
-            return LobbyError(exception);
-        }
-    }
-
     [HttpPost("{publicLobbyId}/match/start")]
     public async Task<ActionResult> StartMatch(
         string publicLobbyId,

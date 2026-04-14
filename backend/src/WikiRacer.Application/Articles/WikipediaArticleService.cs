@@ -223,12 +223,6 @@ public sealed class WikipediaArticleService(
             lobby.SetCountdown(null);
         }
 
-        if (lobby.CanStartCountdown())
-        {
-            lobby.SetCountdown(now.AddSeconds(3));
-            return;
-        }
-
         lobby.SetCountdown(null);
     }
 }

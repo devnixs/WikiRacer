@@ -10,7 +10,6 @@ public sealed class LobbyPlayer
         PlayerId = playerId;
         DisplayName = Guard.AgainstNullOrWhiteSpace(displayName, nameof(displayName));
         IsHost = isHost;
-        IsReady = isHost;
         IsConnected = true;
     }
 
@@ -20,14 +19,7 @@ public sealed class LobbyPlayer
 
     public bool IsHost { get; }
 
-    public bool IsReady { get; private set; }
-
     public bool IsConnected { get; private set; }
-
-    public void SetReady(bool isReady)
-    {
-        IsReady = isReady;
-    }
 
     public void MarkConnected()
     {

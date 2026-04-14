@@ -5,7 +5,7 @@
     >
       @if (isLoading()) {
         <section class="section-grid">
-          <p class="empty-state">Loading results...</p>
+          <p class="empty-state">{{ localization.t('results.loading') }}</p>
         </section>
       } @else if (multiplayerResult(); as current) {
         <section class="section-grid">
@@ -56,6 +56,14 @@
                     <span>{{ localization.t('results.finishTime') }}: {{ finishTimeLabel(player) }}</span>
                     <span>{{ localization.t('results.currentArticle') }}: {{ player.currentArticleTitle ?? '—' }}</span>
                   </div>
+                  <div class="path-list">
+                    <p class="path-list__title">{{ localization.t('results.exactPath') }}</p>
+                    <ol class="path-list__items">
+                      @for (title of recordedPath(player.visitedArticleTitles); track $index) {
+                        <li>{{ title }}</li>
+                      }
+                    </ol>
+                  </div>
                 </article>
               }
             </div>
@@ -93,6 +101,15 @@
               body="Your final race result."
             />
           </div>
+
+          <section class="ranking-board">
+            <h2 class="ranking-board__title">{{ localization.t('results.exactPath') }}</h2>
+            <ol class="path-list__items path-list__items--solo">
+              @for (title of recordedPath(current.visitedTitles); track $index) {
+                <li>{{ title }}</li>
+              }
+            </ol>
+          </section>
         </section>
       } @else {
         <section class="section-grid">

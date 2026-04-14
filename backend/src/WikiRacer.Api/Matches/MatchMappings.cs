@@ -30,7 +30,8 @@ internal static class MatchMappings
                 player.HopCount,
                 player.FinishTime,
                 player.Placement,
-                player.IsConnected)).ToArray(),
+                player.IsConnected,
+                player.VisitedArticleTitles.ToArray())).ToArray(),
             match.TimelineSequence);
     }
 }

@@ -20,7 +20,6 @@ public sealed class LobbyService(
     IClock clock) : ILobbyService
 {
     private static readonly TimeSpan LobbyLifetime = TimeSpan.FromHours(4);
-    private static readonly TimeSpan LobbyCountdownDuration = TimeSpan.FromSeconds(3);
     private const string ValidationFailed = "validation_failed";
     private const string LobbyFull = "lobby_full";
     private const string LobbyNotJoinable = "lobby_not_joinable";
@@ -127,31 +126,6 @@ public sealed class LobbyService(
         }
 
         return new UpdateLobbyLanguageResult(lobby);
-    }
-
-    public async Task<UpdateLobbyReadyResult> UpdateReadyAsync(UpdateLobbyReadyCommand command, CancellationToken cancellationToken)
-    {
-        var lobby = await GetLobbyOrThrowAsync(command.PublicLobbyId, cancellationToken);
-        var playerId = ParsePlayerId(command.PlayerId);
-
-        lock (lobby)
-        {
-            try
-            {
-                lobby.SetPlayerReady(playerId, command.IsReady);
-                ApplyCountdownState(lobby, clock.UtcNow);
-            }
-            catch (InvalidOperationException exception) when (exception.Message.Contains("part of the lobby", StringComparison.OrdinalIgnoreCase))
-            {
-                throw new LobbyOperationException(PlayerNotFound, exception.Message, (int)HttpStatusCode.NotFound);
-            }
-            catch (InvalidOperationException exception)
-            {
-                throw new LobbyOperationException(LobbyNotJoinable, exception.Message, (int)HttpStatusCode.Conflict);
-            }
-        }
-
-        return new UpdateLobbyReadyResult(lobby);
     }
 
     private async Task<JoinLobbyResult> Reconnect(Lobby lobby, string reconnectToken, CancellationToken cancellationToken)
@@ -297,14 +271,6 @@ public sealed class LobbyService(
     private static void ApplyCountdownState(Lobby lobby, DateTimeOffset now)
     {
         NormalizeCountdown(lobby, now);
-
-        if (lobby.CanStartCountdown())
-        {
-            lobby.SetCountdown(now.Add(LobbyCountdownDuration));
-            return;
-        }
-
-        lobby.SetCountdown(null);
     }
 
     private static void NormalizeCountdown(Lobby lobby, DateTimeOffset now)

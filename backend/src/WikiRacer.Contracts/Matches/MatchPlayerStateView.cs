@@ -8,4 +8,5 @@ public sealed record MatchPlayerStateView(
     int HopCount,
     TimeSpan? FinishTime,
     int? Placement,
-    bool IsConnected);
+    bool IsConnected,
+    IReadOnlyList<string> VisitedArticleTitles);

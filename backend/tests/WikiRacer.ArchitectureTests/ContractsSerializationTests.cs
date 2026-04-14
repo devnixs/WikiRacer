@@ -54,7 +54,7 @@ public class ContractsSerializationTests
                         ArticleSelectionMode.Random),
                     new[]
                     {
-                        new LobbyPlayerView("player-1", "Raphael", true, true, true)
+                        new LobbyPlayerView("player-1", "Raphael", true, true)
                     },
                     7,
                     new DateTimeOffset(2026, 4, 10, 11, 59, 0, TimeSpan.Zero),
@@ -114,7 +114,7 @@ public class ContractsSerializationTests
                     new DateTimeOffset(2026, 4, 10, 12, 14, 0, TimeSpan.Zero),
                     new[]
                     {
-                        new MatchPlayerStateView("player-1", "Raphael", MatchPlayerRaceStatus.Active, "Paris", 0, null, null, true)
+                        new MatchPlayerStateView("player-1", "Raphael", MatchPlayerRaceStatus.Active, "Paris", 0, null, null, true, new[] { "Paris" })
                     },
                     501),
                 false));
@@ -122,5 +122,6 @@ public class ContractsSerializationTests
         var json = JsonSerializer.Serialize(envelope, ContractsJson.Default);
 
         Assert.Contains("\"status\":\"active\"", json);
+        Assert.Contains("\"visitedArticleTitles\":[\"Paris\"]", json);
     }
 }

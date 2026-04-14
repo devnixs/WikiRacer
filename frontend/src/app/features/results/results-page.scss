@@ -22,7 +22,9 @@
 
 .ranking-board__title,
 .ranking-row__place,
-.ranking-row__meta {
+.ranking-row__meta,
+.path-list__title,
+.path-list__items {
   margin: 0;
 }
 
@@ -36,7 +38,8 @@
 }
 
 .ranking-row__main,
-.ranking-row__stats {
+.ranking-row__stats,
+.path-list {
   display: grid;
   gap: 0.35rem;
 }
@@ -46,8 +49,32 @@
 }
 
 .ranking-row__meta,
-.ranking-row__stats {
+.ranking-row__stats,
+.path-list__items {
   color: var(--color-text-muted);
+}
+
+.path-list {
+  grid-column: 1 / -1;
+}
+
+.path-list__title {
+  font-weight: 700;
+}
+
+.path-list__items {
+  padding-left: 1.25rem;
+}
+
+.path-list__items li + li {
+  margin-top: 0.25rem;
+}
+
+.path-list__items--solo {
+  padding: 1rem 1.2rem 1rem 2.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
 }
 
 @media (min-width: 720px) {

@@ -9,6 +9,7 @@ export interface MatchPlayerStateView {
   finishTime: string | null;
   placement: number | null;
   isConnected: boolean;
+  visitedArticleTitles: string[];
 }
 
 export interface MatchStateView {

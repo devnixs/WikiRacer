@@ -36,7 +36,6 @@ internal static class LobbyMappings
                 player.PlayerId.ToString(),
                 player.DisplayName,
                 player.IsHost,
-                player.IsReady,
                 player.IsConnected)).ToArray(),
             lobby.Revision,
             lobby.CreatedAtUtc,

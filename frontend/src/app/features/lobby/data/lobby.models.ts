@@ -8,7 +8,6 @@ export interface LobbyPlayerView {
   playerId: string;
   displayName: string;
   isHost: boolean;
-  isReady: boolean;
   isConnected: boolean;
 }
 
@@ -90,10 +89,6 @@ export interface UpdateLobbyArticleRequest {
 
 export interface RandomizeLobbyArticleRequest {
   playerId: string;
-}
-
-export interface UpdateLobbyReadyRequest {
-  isReady: boolean;
 }
 
 export interface LobbySession {

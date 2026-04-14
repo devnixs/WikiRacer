@@ -107,6 +107,12 @@
   box-shadow: var(--shadow-soft);
 }
 
+@media (max-width: 899.98px) {
+  .content-panel {
+    backdrop-filter: none;
+  }
+}
+
 @media (min-width: 840px) {
   .hero {
     grid-template-columns: minmax(0, 1fr) auto;

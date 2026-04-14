@@ -5,7 +5,6 @@ public static class ProtocolMessageTypes
     public const string JoinLobby = "lobby.join";
     public const string LeaveLobby = "lobby.leave";
     public const string UpdateLobbySettings = "lobby.settings.update";
-    public const string SetPlayerReady = "lobby.player.ready";
     public const string StartMatch = "match.start";
     public const string ReportProgress = "match.progress.report";
     public const string AbandonMatch = "match.abandon";

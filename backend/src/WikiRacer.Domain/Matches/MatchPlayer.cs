@@ -4,6 +4,8 @@ namespace WikiRacer.Domain.Matches;
 
 public sealed class MatchPlayer
 {
+    private readonly List<string> _visitedArticleTitles = [];
+
     public MatchPlayer(PlayerId playerId, string displayName, bool isConnected)
     {
         PlayerId = playerId;
@@ -28,6 +30,8 @@ public sealed class MatchPlayer
 
     public bool IsConnected { get; private set; }
 
+    public IReadOnlyList<string> VisitedArticleTitles => _visitedArticleTitles;
+
     public void BeginAtArticle(string canonicalArticleTitle)
     {
         if (Status != MatchPlayerRaceStatus.Active)
@@ -36,6 +40,11 @@ public sealed class MatchPlayer
         }
 
         CurrentArticleTitle = canonicalArticleTitle;
+
+        if (_visitedArticleTitles.Count == 0)
+        {
+            _visitedArticleTitles.Add(canonicalArticleTitle);
+        }
     }
 
     public void ReportProgress(string canonicalArticleTitle)
@@ -51,6 +60,7 @@ public sealed class MatchPlayer
         }
 
         CurrentArticleTitle = canonicalArticleTitle;
+        _visitedArticleTitles.Add(canonicalArticleTitle);
         HopCount++;
     }
 

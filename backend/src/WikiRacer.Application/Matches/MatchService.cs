@@ -34,9 +34,9 @@ public sealed class MatchService(
                 throw new LobbyOperationException("lobby_not_joinable", "Lobby is already in a match.", (int)HttpStatusCode.Conflict);
             }
 
-            if (!lobby.CanStartCountdown())
+            if (!lobby.CanStartMatch())
             {
-                throw new LobbyOperationException("validation_failed", "All connected players must be ready and both articles must be selected.", (int)HttpStatusCode.BadRequest);
+                throw new LobbyOperationException("validation_failed", "All players must be connected and both articles must be selected.", (int)HttpStatusCode.BadRequest);
             }
 
             var match = new Match(

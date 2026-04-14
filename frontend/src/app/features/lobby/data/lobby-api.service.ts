@@ -9,7 +9,6 @@ import {
   JoinLobbyResponse,
   LobbyStateView,
   RandomizeLobbyArticleRequest,
-  UpdateLobbyReadyRequest,
   UpdateLobbyArticleRequest,
   UpdateLobbyLanguageRequest
 } from './lobby.models';
@@ -32,10 +31,6 @@ export class LobbyApiService {
 
   async updateLanguage(publicLobbyId: string, request: UpdateLobbyLanguageRequest): Promise<LobbyStateView> {
     return firstValueFrom(this.httpClient.put<LobbyStateView>(`/api/lobbies/${publicLobbyId}/language`, request));
-  }
-
-  async updateReady(publicLobbyId: string, playerId: string, request: UpdateLobbyReadyRequest): Promise<LobbyStateView> {
-    return firstValueFrom(this.httpClient.put<LobbyStateView>(`/api/lobbies/${publicLobbyId}/players/${playerId}/ready`, request));
   }
 
   async searchArticles(language: string, query: string): Promise<ArticleSearchResponse[]> {

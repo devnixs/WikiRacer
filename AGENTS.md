@@ -110,7 +110,6 @@ Lobby routes in `backend/src/WikiRacer.Api/Controllers/LobbiesController.cs`:
 - `GET /api/lobbies/{publicLobbyId}`
 - `POST /api/lobbies/{publicLobbyId}/join`
 - `PUT /api/lobbies/{publicLobbyId}/language`
-- `PUT /api/lobbies/{publicLobbyId}/players/{playerId}/ready`
 - `POST /api/lobbies/{publicLobbyId}/match/start`
 - `GET /api/lobbies/{publicLobbyId}/match`
 

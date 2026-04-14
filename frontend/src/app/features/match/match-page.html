@@ -1,7 +1,7 @@
     <app-page-frame
       [eyebrow]="localization.t('match.eyebrow')"
       [title]="localization.t('match.title')"
-      [description]="localization.t('match.description')"
+      [description]=""
     >
       @if (!publicLobbyId()) {
         <p class="status-message">{{ localization.t('match.openFromLobby') }}</p>
@@ -213,25 +213,42 @@
 
             <!-- Multiplayer player list -->
             @if (multiplayerMatch(); as match) {
-              <div class="race-status__players">
+              <div class="race-status__players" [class.race-status__players--expanded]="playersPanelExpanded()">
+                <button
+                  type="button"
+                  class="btn-sm btn-secondary race-status__players-toggle"
+                  [attr.aria-expanded]="playersPanelExpanded()"
+                  aria-controls="match-player-pages"
+                  (click)="togglePlayersPanel()"
+                >
+                  <span>{{ localization.t('match.players') }} ({{ match.players.length }})</span>
+                  <span class="race-status__players-icon" aria-hidden="true">{{ playersPanelExpanded() ? '▲' : '▼' }}</span>
+                </button>
+
                 <p class="race-status__players-heading">{{ localization.t('match.players') }}</p>
-                @for (player of match.players; track player.playerId) {
-                  <div class="player-row" [class.player-row--me]="player.playerId === currentPlayerId()">
-                    <div class="player-row__header">
-                      <span class="player-row__name">{{ player.displayName }}</span>
-                      @if (player.playerId === currentPlayerId()) {
-                        <span class="player-row__you">({{ localization.t('match.player.you') }})</span>
-                      }
-                      <span class="player-row__status player-row__status--{{ player.status }}">
-                        {{ playerStatusLabel(player.status) }}
-                      </span>
+                <div
+                  id="match-player-pages"
+                  class="race-status__players-list"
+                  [class.race-status__players-list--hidden]="!playersPanelExpanded()"
+                >
+                  @for (player of match.players; track player.playerId) {
+                    <div class="player-row" [class.player-row--me]="player.playerId === currentPlayerId()">
+                      <div class="player-row__header">
+                        <span class="player-row__name">{{ player.displayName }}</span>
+                        @if (player.playerId === currentPlayerId()) {
+                          <span class="player-row__you">({{ localization.t('match.player.you') }})</span>
+                        }
+                        <span class="player-row__status player-row__status--{{ player.status }}">
+                          {{ playerStatusLabel(player.status) }}
+                        </span>
+                      </div>
+                      <div class="player-row__page">{{ player.currentArticleTitle ?? '—' }}</div>
+                      <div class="player-row__hops">
+                        {{ player.hopCount }} {{ localization.t('match.hops') }}
+                      </div>
                     </div>
-                    <div class="player-row__page">{{ player.currentArticleTitle ?? '—' }}</div>
-                    <div class="player-row__hops">
-                      {{ player.hopCount }} {{ localization.t('match.hops') }}
-                    </div>
-                  </div>
-                }
+                  }
+                </div>
               </div>
             }
             </aside>

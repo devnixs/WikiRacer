@@ -18,8 +18,7 @@ public class MatchServiceTests
         var matchRepository = new InMemoryMatchRepository();
         var lobbyService = LobbyServiceTestsFactory.Create(lobbyRepository);
         var createResult = await lobbyService.CreateAsync(new CreateLobbyCommand("Host", "fr", "fr", 4, 600), CancellationToken.None);
-        var guest = await lobbyService.JoinAsync(new JoinLobbyCommand(createResult.Lobby.PublicId.Value, "Guest", null), CancellationToken.None);
-        await lobbyService.UpdateReadyAsync(new UpdateLobbyReadyCommand(createResult.Lobby.PublicId.Value, guest.Session.PlayerId.ToString(), true), CancellationToken.None);
+        await lobbyService.JoinAsync(new JoinLobbyCommand(createResult.Lobby.PublicId.Value, "Guest", null), CancellationToken.None);
 
         var articleService = new WikipediaArticleService(
             new FakeWikipediaArticleClient(new ResolvedArticle("Paris", "Paris", "/wiki/Paris")),
@@ -49,6 +48,7 @@ public class MatchServiceTests
         {
             Assert.Equal("Paris", player.CurrentArticleTitle);
             Assert.Equal(0, player.HopCount);
+            Assert.Equal(new[] { "Paris" }, player.VisitedArticleTitles);
         });
     }
 
@@ -77,6 +77,7 @@ public class MatchServiceTests
             && player.DisplayName == "Late Guest"
             && player.CurrentArticleTitle == "Paris"
             && player.HopCount == 0
+            && player.VisitedArticleTitles.SequenceEqual(new[] { "Paris" })
             && player.Status == WikiRacer.Domain.Matches.MatchPlayerRaceStatus.Active);
     }
 
@@ -102,6 +103,7 @@ public class MatchServiceTests
 
         Assert.Equal(WikiRacer.Domain.Matches.MatchPlayerRaceStatus.Finished, updated.Players[0].Status);
         Assert.Equal(WikiRacer.Domain.Matches.MatchStatus.Finished, updated.Status);
+        Assert.Equal(new[] { "Paris", "Lyon" }, updated.Players[0].VisitedArticleTitles);
     }
 
     [Fact]
