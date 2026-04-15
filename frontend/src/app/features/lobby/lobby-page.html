@@ -32,22 +32,6 @@
             </button>
           </div>
 
-          @if (isHost() && canStartMultiplayer()) {
-            <button
-              type="button"
-              (click)="startMultiplayerMatch()"
-              [disabled]="isStartingMultiplayer()"
-            >
-              {{ localization.t('lobby.startMultiplayer') }}
-            </button>
-          } @else if (!isHost() && canStartMultiplayer()) {
-            <p class="status-message">{{ localization.t('lobby.countdownWaiting') }}</p>
-          } @else if (isLobbyInMatch(currentLobby)) {
-            <a class="viewer-link viewer-link--accent" [routerLink]="['/match', currentLobby.publicLobbyId]" [queryParams]="{ mode: 'multiplayer' }">
-              {{ localization.t('lobby.openMultiplayer') }}
-            </a>
-          }
-
           @if (currentLobby.settings.startArticle) {
             <div class="viewer-link-group">
               <a class="viewer-link" [routerLink]="['/match', currentLobby.publicLobbyId]">
@@ -204,6 +188,27 @@
             [title]="localization.t('lobby.members')"
             [body]="playersSummary()"
           />
+
+          @if (isHost() && canShowMultiplayerStart()) {
+            <div class="lobby-actions">
+              <button
+                type="button"
+                class="lobby-actions__start"
+                (click)="startMultiplayerMatch()"
+                [disabled]="!canStartMultiplayer() || isStartingMultiplayer()"
+              >
+                {{ localization.t('lobby.startMultiplayer') }}
+              </button>
+            </div>
+          } @else if (!isHost() && canStartMultiplayer()) {
+            <p class="status-message lobby-actions">{{ localization.t('lobby.countdownWaiting') }}</p>
+          } @else if (isLobbyInMatch(currentLobby)) {
+            <div class="lobby-actions">
+              <a class="viewer-link viewer-link--accent" [routerLink]="['/match', currentLobby.publicLobbyId]" [queryParams]="{ mode: 'multiplayer' }">
+                {{ localization.t('lobby.openMultiplayer') }}
+              </a>
+            </div>
+          }
         </section>
       }
     </app-page-frame>

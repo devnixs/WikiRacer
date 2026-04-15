@@ -110,6 +110,7 @@ export class MatchPageComponent implements OnInit, OnDestroy {
   private readonly matchApi = inject(MatchApiService);
   private readonly lobbyRealtime = inject(LobbyRealtimeService);
   private timerId: number | null = null;
+  private articleScrollFrameId: number | null = null;
   private connectedLobbyId: string | null = null;
 
   ngOnInit(): void {
@@ -119,6 +120,7 @@ export class MatchPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTimer();
+    this.cancelPendingArticleScroll();
     this.connectedLobbyId = null;
     this.lobbyRealtime.disconnect();
   }
@@ -506,6 +508,7 @@ export class MatchPageComponent implements OnInit, OnDestroy {
     this.renderedArticle.set(article);
     this.renderedHtml.set(prepared.html);
     this.tocEntries.set(prepared.toc);
+    this.scheduleArticleTopScroll();
 
     if (this.isMultiplayerMode()) {
       await this.reportMultiplayerProgress(article.title);
@@ -519,6 +522,26 @@ export class MatchPageComponent implements OnInit, OnDestroy {
         replaceUrl: true
       });
     }
+  }
+
+  private scheduleArticleTopScroll(): void {
+    this.cancelPendingArticleScroll();
+
+    this.articleScrollFrameId = requestAnimationFrame(() => {
+      this.articleScrollFrameId = requestAnimationFrame(() => {
+        this.articleScrollFrameId = null;
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      });
+    });
+  }
+
+  private cancelPendingArticleScroll(): void {
+    if (this.articleScrollFrameId === null) {
+      return;
+    }
+
+    cancelAnimationFrame(this.articleScrollFrameId);
+    this.articleScrollFrameId = null;
   }
 
   private async reportMultiplayerProgress(canonicalTitle: string): Promise<void> {

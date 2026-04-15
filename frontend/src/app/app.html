@@ -1,30 +1,4 @@
 <div class="app-shell">
-  <header class="hero">
-    <div class="hero__copy">
-      <div class="hero__brand">
-        <span class="hero__mark">WR</span>
-        <div>
-          <p class="hero__kicker">{{ localization.t('app.kicker') }}</p>
-          <p class="hero__strap">
-            {{ localization.t('app.strap') }}
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <nav class="hero__nav" aria-label="Primary">
-      @for (item of navigation; track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-        >
-          {{ localization.t(item.key) }}
-        </a>
-      }
-    </nav>
-  </header>
-
   <main class="content-panel">
     <router-outlet />
   </main>

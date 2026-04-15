@@ -48,6 +48,15 @@
   border-color: transparent;
 }
 
+.lobby-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lobby-actions__start {
+  min-width: 12rem;
+}
+
 .share-panel,
 .join-form,
 .joined-banner,

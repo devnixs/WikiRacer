@@ -17,10 +17,11 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render shell navigation', async () => {
+  it('should render the routed content panel without shell navigation', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('nav')?.textContent).toContain('Salon');
+    expect(compiled.querySelector('main.content-panel')).toBeTruthy();
+    expect(compiled.querySelector('nav')).toBeNull();
   });
 });

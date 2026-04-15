@@ -1,20 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { LocalizationService } from './core/localization/localization.service';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  protected readonly localization = inject(LocalizationService);
-
-  protected readonly navigation = [
-    { key: 'nav.home', path: '/' },
-    { key: 'nav.lobby', path: '/lobby' },
-    { key: 'nav.match', path: '/match' },
-    { key: 'nav.results', path: '/results' }
-  ] as const;
-}
+export class App {}

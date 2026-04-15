@@ -267,7 +267,7 @@ const translations: Record<Locale, Record<TranslationKey, string>> = {
     'app.kicker': 'WikiRacer',
     'app.strap': 'Parcourez Wikipédia de lien en lien — trouvez le chemin le plus court vers la page cible avant tout le monde !',
     'home.eyebrow': 'Accueil',
-    'home.title': 'Combien de clics pour y arriver ?',
+    'home.title': 'WikiRacer',
     'home.description': 'Créez un salon, invitez vos amis et partez à la course à travers Wikipédia. Le chemin le plus court gagne.',
     'home.create': 'Créer un salon',
     'home.create.button': 'Créer le salon',

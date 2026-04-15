@@ -1,11 +1,7 @@
-.hero-grid {
+.home-entry {
   display: grid;
-  gap: 1.2rem;
-}
-
-.hero-grid__intro {
-  display: grid;
-  gap: 1rem;
+  min-height: 16rem;
+  align-content: center;
 }
 
 .create-lobby {
@@ -40,19 +36,8 @@
   line-height: 1.5;
 }
 
-.metric-grid,
-.feature-grid {
-  display: grid;
-  gap: 1rem;
-}
-
 @media (min-width: 720px) {
   .create-lobby__controls {
     grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .metric-grid,
-  .feature-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

@@ -10,91 +10,6 @@
   padding: clamp(1rem, 2vw, 2rem);
   display: grid;
   align-content: start;
-  gap: 1.5rem;
-}
-
-.hero {
-  display: grid;
-  gap: 1.25rem;
-  padding: clamp(1.5rem, 3vw, 2.25rem);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-panel);
-  background:
-    radial-gradient(circle at top left, rgba(255, 142, 74, 0.42), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(71, 153, 255, 0.26), transparent 32%),
-    var(--gradient-hero);
-  box-shadow: var(--shadow-strong);
-}
-
-.hero__copy {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.hero__brand {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem;
-  align-items: start;
-}
-
-.hero__mark {
-  display: inline-grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 1rem;
-  background: var(--color-accent);
-  color: #ffffff;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.hero__kicker,
-.hero__strap {
-  margin: 0;
-}
-
-.hero__kicker {
-  color: var(--color-accent-strong);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.hero__strap {
-  max-width: 64ch;
-  color: var(--color-text-muted);
-  line-height: 1.7;
-}
-
-.hero__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.hero__nav a {
-  color: var(--color-ink);
-  text-decoration: none;
-  padding: 0.7rem 1rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
-  transition:
-    transform 180ms ease,
-    background-color 180ms ease,
-    border-color 180ms ease;
-}
-
-.hero__nav a:hover,
-.hero__nav a.is-active {
-  transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .content-panel {
@@ -110,16 +25,5 @@
 @media (max-width: 899.98px) {
   .content-panel {
     backdrop-filter: none;
-  }
-}
-
-@media (min-width: 840px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-  }
-
-  .hero__nav {
-    justify-content: end;
   }
 }

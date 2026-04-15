@@ -1,10 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PageFrameComponent } from '../../shared/layout/page-frame';
-import { FeatureCardComponent } from '../../shared/ui/feature-card';
-import { MetricTileComponent } from '../../shared/ui/metric-tile';
-import { ChipComponent } from '../../shared/ui/chip';
 import { LobbyApiService } from '../lobby/data/lobby-api.service';
 import { LobbySessionService } from '../lobby/data/lobby-session.service';
 import { LocalizationService } from '../../core/localization/localization.service';
@@ -12,7 +8,7 @@ import { LocalizationService } from '../../core/localization/localization.servic
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.html',
-  imports: [PageFrameComponent, FeatureCardComponent, MetricTileComponent, ChipComponent, FormsModule],
+  imports: [FormsModule],
   styleUrl: './home-page.scss'
 })
 export class HomePageComponent {

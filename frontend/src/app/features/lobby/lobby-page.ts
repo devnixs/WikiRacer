@@ -55,6 +55,15 @@ export class LobbyPageComponent implements OnInit, OnDestroy {
   protected readonly startSuggestions = signal<ArticleSearchResponse[]>([]);
   protected readonly targetSuggestions = signal<ArticleSearchResponse[]>([]);
   protected readonly countdownSeconds = signal(0);
+  protected readonly canShowMultiplayerStart = computed(() => {
+    const lobby = this.lobby();
+
+    return !!lobby
+      && lobby.status === 'waiting'
+      && !!lobby.settings.startArticle
+      && !!lobby.settings.targetArticle
+      && lobby.players.length > 0;
+  });
   protected readonly canStartMultiplayer = computed(() => {
     const lobby = this.lobby();
 

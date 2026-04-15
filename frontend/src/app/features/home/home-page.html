@@ -1,31 +1,23 @@
-    <app-page-frame
-      [eyebrow]="localization.t('home.eyebrow')"
-      [title]="localization.t('home.title')"
-      [description]="localization.t('home.description')"
-    >
-      <section class="hero-grid">
-        <div class="hero-grid__intro">
-          <form class="create-lobby" (ngSubmit)="createLobby()">
-            <label class="create-lobby__label" for="display-name">{{ localization.t('home.create') }}</label>
-            <div class="create-lobby__controls">
-              <input
-                id="display-name"
-                name="displayName"
-                [(ngModel)]="displayName"
-                [disabled]="isCreating()"
-                maxlength="32"
-                [placeholder]="localization.t('home.create.placeholder')"
-                required
-              />
-              <button type="submit" [disabled]="isCreating() || !displayName.trim()">
-                {{ isCreating() ? localization.t('home.create.creating') : localization.t('home.create.button') }}
-              </button>
-            </div>
-            @if (createError(); as error) {
-              <p class="create-lobby__error">{{ error }}</p>
-            }
-          </form>
-        </div>
-      </section>
-    </app-page-frame>
+<section class="home-entry" aria-label="Créer une partie multijoueur">
+  <form class="create-lobby" (ngSubmit)="createLobby()">
+    <label class="create-lobby__label" for="display-name">{{ localization.t('home.create') }}</label>
+    <div class="create-lobby__controls">
+      <input
+        id="display-name"
+        name="displayName"
+        [(ngModel)]="displayName"
+        [disabled]="isCreating()"
+        maxlength="32"
+        [placeholder]="localization.t('home.create.placeholder')"
+        required
+      />
+      <button type="submit" [disabled]="isCreating() || !displayName.trim()">
+        {{ isCreating() ? localization.t('home.create.creating') : localization.t('home.create.button') }}
+      </button>
+    </div>
+    @if (createError(); as error) {
+      <p class="create-lobby__error">{{ error }}</p>
+    }
+  </form>
+</section>
   
